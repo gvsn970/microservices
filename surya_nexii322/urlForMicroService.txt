@@ -1,0 +1,14 @@
+http://localhost:9981/hystrix
+
+http://localhost:9981/turbine.stream
+
+http://localhost:9411/zipkin/
+
+
+http://localhost:9880/api/auth/showData
+
+
+http://localhost:9880/api/admin/getEmployees
+
+ng serve --port 80 --host 0.0.0.0 --disableHostCheck true
+

@@ -1,0 +1,9 @@
+package com.nexii.springbootmultipulefileupolads.entity;
+
+public class Product {
+
+	private String id;
+	private String name;
+	private double price;
+	private String []photos;
+}

@@ -1,0 +1,180 @@
+package com.nexiilabs.stp.prospect;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.nexiilabs.stp.user.CreateUserModel;
+
+@RestController
+@RequestMapping("/contact")
+public class ContactReportsController {
+	private static final Logger log = LogManager.getLogger(ContactReportsController.class);
+	@Autowired
+	ContactReportsService contactReportsService;
+
+	@RequestMapping(value = "/getContactCount", method = RequestMethod.GET)
+	public ContactCountResponseDTO getContactCount(@RequestParam("userId") int userId, HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		ContactCountResponseDTO contactCountResponseDTO = null;
+		int userTypeId=0;
+		if (userSession != null) {
+			userTypeId=userId;
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			System.err.println("userTypeId::"+userTypeId);
+			if (userId==-2 || userId==-1) {
+				userId = userModel.getUserId();
+			}
+			System.err.println("userId::"+userId);
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					contactCountResponseDTO = contactReportsService.getContactCount(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return contactCountResponseDTO;
+	}
+
+	@RequestMapping(value = "/getFilterdDateContactCount", method = RequestMethod.GET)
+	public int getFilterdDateContactCount(@RequestParam("userId") int userId,
+			@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		int count = 0;
+		int userTypeId=0;
+		if (userSession != null) {
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			userTypeId=userId;
+			if (userId ==-2 || userId==-1) {
+				userId = userModel.getUserId();
+			}
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					count = contactReportsService.getFilterdDateContactCount(startDate, endDate, userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return count;
+	}
+
+	@RequestMapping(value = "/getTodayContactList", method = RequestMethod.GET)
+	public List<ProspectListResposeDTO> getTodayContactList(@RequestParam("userId") int userId,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<ProspectListResposeDTO> prospectListResposeDTO = null;
+		int userTypeId=0;
+		if (userSession != null) {
+			userTypeId=userId;
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			if (userId==-2 || userId==-1) {
+				userId = userModel.getUserId();
+			}
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					prospectListResposeDTO = contactReportsService.getTodayContactList(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prospectListResposeDTO;
+	}
+
+	@RequestMapping(value = "/getWeeklyContactList", method = RequestMethod.GET)
+	public List<ProspectListResposeDTO> getWeeklyContactList(@RequestParam("userId") int userId,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<ProspectListResposeDTO> prospectListResposeDTO = null;
+		int userTypeId=0;
+		if (userSession != null) {
+			userTypeId=userId;
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			if (userId==-2 || userId==-1) {
+				userId = userModel.getUserId();
+			}
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					prospectListResposeDTO = contactReportsService.getWeeklyContactList(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prospectListResposeDTO;
+	}
+
+	@RequestMapping(value = "/getMonthlyContactList", method = RequestMethod.GET)
+	public List<ProspectListResposeDTO> getMonthlyContactList(@RequestParam("userId") int userId,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<ProspectListResposeDTO> prospectListResposeDTO = null;
+		int userTypeId=0;
+		if (userSession != null) {
+			userTypeId=userId;
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			if (userId ==-2 || userId==-1) {
+				userId = userModel.getUserId();
+			}
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					prospectListResposeDTO = contactReportsService.getMonthlyContactList(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prospectListResposeDTO;
+	}
+
+	@RequestMapping(value = "/getFilteredDateContactList", method = RequestMethod.GET)
+	public List<ProspectListResposeDTO> getFilteredDateContactList(@RequestParam("userId") int userId,
+			@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<ProspectListResposeDTO> prospectListResposeDTO = null;
+		int userTypeId=0;
+		LocalDate today = LocalDate.now();
+		if (userSession != null) {
+			userTypeId=userId;
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			if (userId == -2|| userId==-1) {
+				userId = userModel.getUserId();
+			}
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					if (startDate.equals("null") && endDate.equals("null")) {
+						startDate = today.minusMonths(1).withDayOfMonth(1).toString();
+						endDate = today.toString();
+					}
+					prospectListResposeDTO = contactReportsService.getFilteredDateContactList(userId, startDate,
+							endDate,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prospectListResposeDTO;
+	}
+}

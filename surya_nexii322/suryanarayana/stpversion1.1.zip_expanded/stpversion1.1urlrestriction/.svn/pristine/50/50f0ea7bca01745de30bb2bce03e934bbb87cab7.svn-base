@@ -1,0 +1,73 @@
+package com.nexiilabs.stp.prospect;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "prospect_company")
+public class ProspectCompanyModel {
+
+		@Id
+		@GeneratedValue(strategy = GenerationType.AUTO)
+		@Column(name = "company_id", unique = true, nullable = false)
+		private int companyId;
+		@Column(name = "company_name")
+		private String companyName;
+		@Column(name = "company_location")
+		private String companyLocation;
+		@Column(name = "created_by")
+		private int createdBy;
+		@Column(name = "delete_status")
+		private int deleteStatus;
+		
+		public int getCompanyId() {
+			return companyId;
+		}
+		public void setCompanyId(int companyId) {
+			this.companyId = companyId;
+		}
+		public String getCompanyName() {
+			return companyName;
+		}
+		public void setCompanyName(String companyName) {
+			this.companyName = companyName;
+		}
+		public String getCompanyLocation() {
+			return companyLocation;
+		}
+		public void setCompanyLocation(String companyLocation) {
+			this.companyLocation = companyLocation;
+		}
+		public int getCreatedBy() {
+			return createdBy;
+		}
+		public void setCreatedBy(int createdBy) {
+			this.createdBy = createdBy;
+		}
+		public int getDeleteStatus() {
+			return deleteStatus;
+		}
+		public void setDeleteStatus(int deleteStatus) {
+			this.deleteStatus = deleteStatus;
+		}
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("ProspectCompanyModel [companyId=");
+			builder.append(companyId);
+			builder.append(", companyName=");
+			builder.append(companyName);
+			builder.append(", companyLocation=");
+			builder.append(companyLocation);
+			builder.append(", createdBy=");
+			builder.append(createdBy);
+			builder.append(", deleteStatus=");
+			builder.append(deleteStatus);
+			builder.append("]");
+			return builder.toString();
+		}
+}

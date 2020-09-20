@@ -1,0 +1,409 @@
+package com.nexiilabs.stp.prospect;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.nexiilabs.stp.resource.EmployeeResponseDTO;
+import com.nexiilabs.stp.user.CreateUserModel;
+import com.nexiilabs.stp.user.UserResponseDTO;
+import com.nexiilabs.stp.user.UsersListResponseDTO;
+
+@RestController
+@RequestMapping("/prospect")
+public class ProspectController {
+	private static final Logger log = LogManager.getLogger(ProspectController.class);
+	@Autowired
+	ProspectService prospectService;
+
+	@RequestMapping(value = "/addContact", method = RequestMethod.POST)
+	public UserResponseDTO addContact(@RequestParam("firstName") String firstName,@RequestParam("lastName") String lastName,
+			@RequestParam("phoneNumber") String phoneNumber,@RequestParam("alternateNumber") String alternateNumber,
+			@RequestParam("email") String email,@RequestParam("designation") String designation,
+			@RequestParam("address1") String address1,@RequestParam("address2") String address2,@RequestParam("additionalInfo") String additionalInfo,
+			@RequestParam("fkCompanyId") Integer fkCompanyId, HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		ProspectModel prospectModel = new ProspectModel();
+		int userId = 0;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Prospects")) {
+					if (firstName != null && fkCompanyId != 0 && lastName!=null && phoneNumber!=null && email!=null && designation!=null && address1!=null) {
+						prospectModel.setCreatedBy(userId);
+						prospectModel.setFirstName(firstName);
+						prospectModel.setLastName(lastName);
+						prospectModel.setDesignation(designation);
+						prospectModel.setAdditionalInformation(additionalInfo);
+						prospectModel.setAddress1(address1);
+						prospectModel.setAddress2(address2);
+						prospectModel.setPhoneNumber(phoneNumber);
+						prospectModel.setAlternateNumber(alternateNumber);
+						prospectModel.setProspectName(firstName+" "+lastName);
+						prospectModel.setEmail(email);
+						prospectModel.setFkCompanyId(fkCompanyId);
+						userResponseDTO = prospectService.addContact(prospectModel);
+					} else {
+						userResponseDTO.setStatusCode(0);
+						userResponseDTO.setMessage("All input fields are Mandatory");
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			userResponseDTO.setMessage(e.getMessage());
+			userResponseDTO.setStatusCode(0);
+		}
+		return userResponseDTO;
+	}
+
+	@RequestMapping(value = "/updateContact", method = RequestMethod.POST)
+	public UserResponseDTO updateContact(@RequestParam("firstName") String firstName,@RequestParam("lastName") String lastName,
+			@RequestParam("phoneNumber") String phoneNumber,@RequestParam("alternateNumber") String alternateNumber,
+			@RequestParam("email") String email,@RequestParam("designation") String designation,
+			@RequestParam("address1") String address1,@RequestParam("address2") String address2,@RequestParam("additionalInfo") String additionalInfo,
+			@RequestParam("fkCompanyId") Integer fkCompanyId,@RequestParam("prospectId") Integer prospectId,
+			@RequestParam("meetingTypeId") Integer meetingTypeId, @RequestParam("stageId") Integer stageId,
+			@RequestParam("nextFollowup") String nextFollowup, @RequestParam("comments") String comments,
+			@RequestParam("contactedOn") String contactedOn, HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		ProspectUpdateModel prospectUpdateModel = new ProspectUpdateModel();
+		ProspectModel prospectModel = new ProspectModel();
+		int userId = 0;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Prospects")) {
+					if (firstName != null && fkCompanyId != 0 && lastName!=null && phoneNumber!=null && email!=null && designation!=null && address1!=null && fkCompanyId!=0&& nextFollowup != null && prospectId != 0 && meetingTypeId != 0 && stageId != 0
+							&& comments != null) {
+						prospectModel.setEmail(email);
+						prospectModel.setFkCompanyId(fkCompanyId);
+						prospectModel.setFirstName(firstName);
+						prospectModel.setLastName(lastName);
+						prospectModel.setDesignation(designation);
+						prospectModel.setAdditionalInformation(additionalInfo);
+						prospectModel.setAddress1(address1);
+						prospectModel.setAddress2(address2);
+						prospectModel.setPhoneNumber(phoneNumber);
+						prospectModel.setAlternateNumber(alternateNumber);
+						prospectModel.setProspectName(firstName+" "+lastName);
+						prospectModel.setUpdatedBy(userId);
+						prospectUpdateModel.setCreatedBy(userId);
+						prospectUpdateModel.setFkProspectId(prospectId);
+						prospectUpdateModel.setMeetingTypeId(meetingTypeId);
+						if(stageId==7){
+							//prospectUpdateModel.setNextFollowup(nextFollowup);
+						}else{
+							prospectUpdateModel.setNextFollowup(nextFollowup);
+						}
+						prospectUpdateModel.setStageId(stageId);
+						prospectUpdateModel.setComments(comments);
+						prospectUpdateModel.setContactedOn(contactedOn);
+						userResponseDTO = prospectService.updateContact(prospectUpdateModel,prospectModel);
+					} else {
+						userResponseDTO.setStatusCode(0);
+						userResponseDTO.setMessage("All input fields are Mandatory");
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			userResponseDTO.setMessage(e.getMessage());
+			userResponseDTO.setStatusCode(0);
+		}
+		return userResponseDTO;
+	}
+
+	@RequestMapping(value = "/prospectList", method = RequestMethod.GET)
+	public List<ProspectListResposeDTO> getProspectList(@RequestParam("userTypeId") int userTypeId,HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<ProspectListResposeDTO> prospectListResposeDTO = null;
+		int userId=0;
+		if (userSession != null) {
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			userId = userModel.getUserId();
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					prospectListResposeDTO = prospectService.getProspectList(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prospectListResposeDTO;
+	}
+
+	@RequestMapping(value = "/allFollowupList", method = RequestMethod.GET)
+	public List<FollowupProspectListResponseDTO> getAllFollowupList(@RequestParam("userTypeId") int userTypeId,HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		int userId=0;
+		List<FollowupProspectListResponseDTO> followupProspectListResponseDTO = null;
+		if (userSession != null) {
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			userId = userModel.getUserId();
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					followupProspectListResponseDTO = prospectService.getAllFollowupList(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return followupProspectListResponseDTO;
+	}
+
+	@RequestMapping(value = "/todayFollowupList", method = RequestMethod.GET)
+	public List<FollowupProspectListResponseDTO> getTodayFollowupList(@RequestParam("userTypeId") int userTypeId,HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<FollowupProspectListResponseDTO> followupProspectListResponseDTO = null;
+		int userId=0;
+		if (userSession != null) {
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			userId = userModel.getUserId();
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					followupProspectListResponseDTO = prospectService.getTodayFollowupList(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return followupProspectListResponseDTO;
+	}
+
+	@RequestMapping(value = "/meetingTypesList", method = RequestMethod.GET)
+	public List<MeetingType> getMeetingTypesList(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<MeetingType> meetinglist = null;
+		if (userSession != null) {
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					meetinglist = prospectService.getMeetingTypesList();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return meetinglist;
+	}
+
+	@RequestMapping(value = "/stageList", method = RequestMethod.GET)
+	public List<StageModel> getStageList(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<StageModel> stageList = null;
+		if (userSession != null) {
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					stageList = prospectService.getStageList();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return stageList;
+	}
+	@RequestMapping(value = "/deleteProspect", method = RequestMethod.POST)
+	public UserResponseDTO deleteProspect(@RequestParam("prospectId") Integer prospectId,
+		 HttpServletRequest request,HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		ProspectModel prospectModel = new ProspectModel();
+		int userId = 0;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Prospects")) {
+					if (prospectId != 0) {
+						prospectModel.setDeletedBy(userId);
+						prospectModel.setProspectId(prospectId);
+						userResponseDTO = prospectService.deleteProspect(prospectModel);
+					} else {
+						userResponseDTO.setStatusCode(0);
+						userResponseDTO.setMessage("All input fields are Mandatory");
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			userResponseDTO.setMessage(e.getMessage());
+			userResponseDTO.setStatusCode(0);
+		}
+		return userResponseDTO;
+	}
+	@RequestMapping(value = "/getProspectDetails", method = RequestMethod.GET)
+	public FollowupProspectListResponseDTO getProspectDetails(@RequestParam("prospectId") Integer prospectId, HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		FollowupProspectListResponseDTO followupProspectListResponseDTO = null;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Prospects")) {
+					followupProspectListResponseDTO = prospectService.getProspectDetails(prospectId);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return followupProspectListResponseDTO;
+	}
+	@RequestMapping(value = "/addCompany", method = RequestMethod.POST)
+	public UserResponseDTO addCompany(@RequestParam("companyName") String companyName,@RequestParam("location") String location, HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		ProspectCompanyModel prospectCompanyModel=new ProspectCompanyModel();
+		int userId = 0;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Prospects")) {
+					if (companyName != null && companyName != null) {
+						prospectCompanyModel.setCompanyName(companyName);
+						prospectCompanyModel.setCompanyLocation(location);
+						prospectCompanyModel.setCreatedBy(userId);
+						userResponseDTO = prospectService.addCompany(prospectCompanyModel);
+					} else {
+						userResponseDTO.setStatusCode(0);
+						userResponseDTO.setMessage("All input fields are Mandatory");
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			userResponseDTO.setMessage(e.getMessage());
+			userResponseDTO.setStatusCode(0);
+		}
+		return userResponseDTO;
+	}
+	@RequestMapping(value = "/companiesList", method = RequestMethod.GET)
+	public List<ProspectCompanyModel> getCompaniesList(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<ProspectCompanyModel> prospectList = null;
+		if (userSession != null) {
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					prospectList = prospectService.getCompaniesList();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prospectList;
+	}
+	@RequestMapping(value = "/closedProspectList", method = RequestMethod.GET)
+	public List<ProspectListResposeDTO> getClosedProspectList(@RequestParam("userTypeId") int userTypeId,HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<ProspectListResposeDTO> prospectListResposeDTO = null;
+		int userId=0;
+		if (userSession != null) {
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			userId = userModel.getUserId();
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					prospectListResposeDTO = prospectService.getClosedProspectList(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prospectListResposeDTO;
+	}
+	@RequestMapping(value = "/trackProspect", method = RequestMethod.GET)
+	public List<FollowupProspectListResponseDTO> getTrackDetails(@RequestParam("prospectId") Integer prospectId,HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<FollowupProspectListResponseDTO> followupProspectListResponseDTO = null;
+		if (userSession != null) {
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					followupProspectListResponseDTO = prospectService.getTrackDetails(prospectId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return followupProspectListResponseDTO;
+	}
+	@RequestMapping(value = "/allprospectList", method = RequestMethod.GET)
+	public List getAllProspectList(@RequestParam("userTypeId") int userTypeId,HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<ProspectListResposeDTO> prospectListResposeDTO = null;
+		int userId=0;
+		if (userSession != null) {
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			userId = userModel.getUserId();
+			List<String> menuList = (List<String>) userSession.getAttribute("menuPermissions");
+			if (menuList.contains("Prospects")) {
+				try {
+					prospectListResposeDTO = prospectService.getAllProspectList(userId,userTypeId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prospectListResposeDTO;
+	}
+}

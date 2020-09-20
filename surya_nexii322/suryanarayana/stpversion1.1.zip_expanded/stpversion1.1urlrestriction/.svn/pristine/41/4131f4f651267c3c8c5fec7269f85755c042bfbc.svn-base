@@ -1,0 +1,19 @@
+package com.nexiilabs.stp.prospect;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface FollowupReportsRepository {
+
+	List<FollowupProspectListResponseDTO> todayFollowupReportsList(int userId,String toDay,int updateStatus);
+
+	int todayFollowupCount(int userId, String today,int updatedType);
+
+	int getFollowupCountInDateRange(int userId, String startDate, String endDate, int updatedType);
+
+	List<FollowupProspectListResponseDTO> followupReportsList(int userId, String startDate, String endDate,
+			int updatedType);
+
+}

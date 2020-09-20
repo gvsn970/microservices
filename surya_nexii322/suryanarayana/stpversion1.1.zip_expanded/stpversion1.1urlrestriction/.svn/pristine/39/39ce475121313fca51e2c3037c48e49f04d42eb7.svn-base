@@ -1,0 +1,17 @@
+package com.nexiilabs.stp.prospect;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+@Repository
+public interface ContactReportsRepository {
+
+	List<ProspectListResposeDTO> getTodayContactList(int userId);
+
+	int getContactCount(int userId);
+
+	int getBetweenCount(String startDate, String endDate, int userId);
+
+	List<ProspectListResposeDTO> getBetweenDatesContactList(String startDate, String endDate, int userId);
+
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;springboot&apos; to &apos;com.nexiilab.springboot&apos;&#x0A;- Original project: &apos;springboot&apos;&#x0A;- Original element: &apos;springboot/src/main/java/springboot&apos;&#x0A;- Renamed element: &apos;springboot/src/main/java/com.nexiilab.springboot&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;springboot&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/src\/main\/java&lt;springboot" name="com.nexiilab.springboot" qualified="false" references="true" stamp="1520244321714" textual="false" version="1.0"/>
+</session>

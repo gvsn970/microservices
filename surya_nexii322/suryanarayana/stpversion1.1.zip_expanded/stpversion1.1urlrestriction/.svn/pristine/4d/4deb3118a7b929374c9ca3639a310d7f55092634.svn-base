@@ -1,0 +1,31 @@
+package com.nexiilabs.stp.prospect;
+
+import java.util.List;
+
+import com.nexiilabs.stp.user.UserResponseDTO;
+
+public interface ProspectRepository {
+
+	UserResponseDTO addContact(ProspectModel prospectModel);
+
+	UserResponseDTO updateContact(ProspectUpdateModel prospectUpdateModel, ProspectModel prospectModel);
+
+	List<ProspectListResposeDTO> getProspectList(int userId);
+
+	List<FollowupProspectListResponseDTO> getAllFollowupList(int userId);
+
+	List<FollowupProspectListResponseDTO> getTodayFollowupList(int userId);
+
+	List<MeetingType> getMeetingTypesList();
+
+	List<StageModel> getStageList();
+
+	UserResponseDTO deleteProspect(ProspectModel prospectModel);
+
+	FollowupProspectListResponseDTO getProspectDetails(Integer prospectId);
+
+	UserResponseDTO addCompany(ProspectCompanyModel prospectCompanyModel);
+
+	List<ProspectCompanyModel> getCompaniesList();
+
+}

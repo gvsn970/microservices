@@ -1,0 +1,34 @@
+package com.nexiilabs.stp.prospect;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.nexiilabs.stp.user.UsersListResponseDTO;
+
+@Service
+public interface FollowupReportsService {
+
+	List<FollowupProspectListResponseDTO> todayUpdatedFollowupReportsList(int userId, int userTypeId);
+
+	FollowupReportsCountModel followupReportsCounts(int userId,int usertypeId);
+
+	List<FollowupProspectListResponseDTO> todayNotUpdatedFollowupReportsList(int userId,int userTypeId);
+
+	List<FollowupProspectListResponseDTO> weeklyUpdatedFollowupReportsList(int userId,int userTypeId);
+
+	List<FollowupProspectListResponseDTO> weeklyNotUpdatedFollowupReportsList(int userId,int userTypeId);
+
+	List<FollowupProspectListResponseDTO> monthlyUpdatedFollowupReportsList(int userId,int userTypeId);
+
+	List<FollowupProspectListResponseDTO> monthlyNotUpdatedFollowupReportsList(int userId,int userTypeId);
+
+	List<FollowupProspectListResponseDTO> dateRangeUpdatedFollowupReportsList(int userId,int userTypeId);
+
+	List<FollowupProspectListResponseDTO> dateRangeNotUpdatedFollowupReportsList(int userId,int userTypeId);
+
+	FollowupReportsCountModel dateRangefollowupReportsCounts(int userId, String startDate, String endDate,int userTypeId);
+
+	List<UsersListResponseDTO> getUsersListForProspets(int userId);
+
+}

@@ -1,0 +1,89 @@
+2018-03-14 16:04:38 - Starting SpringbootDemoLoggingApplication on nexiilabs with PID 8093 (/home/nexii/eclipse-workspace/suryanarayana/springbootDemoLogging/target/classes started by nexii in /home/nexii/eclipse-workspace/suryanarayana/springbootDemoLogging)
+2018-03-14 16:04:38 - No active profile set, falling back to default profiles: default
+2018-03-14 16:04:38 - Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:04:38 IST 2018]; root of context hierarchy
+2018-03-14 16:04:39 - HV000001: Hibernate Validator 5.3.5.Final
+2018-03-14 16:04:40 - Tomcat initialized with port(s): 8080 (http)
+2018-03-14 16:04:40 - Starting service [Tomcat]
+2018-03-14 16:04:40 - Starting Servlet Engine: Apache Tomcat/8.5.16
+2018-03-14 16:04:40 - Initializing Spring embedded WebApplicationContext
+2018-03-14 16:04:40 - Root WebApplicationContext: initialization completed in 1725 ms
+2018-03-14 16:04:40 - Mapping servlet: 'dispatcherServlet' to [/]
+2018-03-14 16:04:40 - Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-03-14 16:04:40 - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-03-14 16:04:40 - Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-03-14 16:04:40 - Mapping filter: 'requestContextFilter' to: [/*]
+2018-03-14 16:04:41 - Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:04:38 IST 2018]; root of context hierarchy
+2018-03-14 16:04:41 - Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-03-14 16:04:41 - Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-03-14 16:04:41 - Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:04:41 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:04:41 - Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:04:41 - Registering beans for JMX exposure on startup
+2018-03-14 16:04:41 - Initializing ProtocolHandler ["http-nio-8080"]
+2018-03-14 16:04:41 - Starting ProtocolHandler ["http-nio-8080"]
+2018-03-14 16:04:41 - Using a shared selector for servlet write/read
+2018-03-14 16:04:41 - Tomcat started on port(s): 8080 (http)
+2018-03-14 16:04:41 - Started SpringbootDemoLoggingApplication in 3.365 seconds (JVM running for 4.429)
+2018-03-14 16:07:07 - Application shutdown requested.
+2018-03-14 16:07:07 - Closing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:04:38 IST 2018]; root of context hierarchy
+2018-03-14 16:07:07 - Unregistering JMX-exposed beans on shutdown
+2018-03-14 16:12:36 - Starting SpringbootDemoLoggingApplication on nexiilabs with PID 8331 (/home/nexii/eclipse-workspace/suryanarayana/springbootDemoLogging/target/classes started by nexii in /home/nexii/eclipse-workspace/suryanarayana/springbootDemoLogging)
+2018-03-14 16:12:36 - Running with Spring Boot v1.5.6.RELEASE, Spring v4.3.10.RELEASE
+2018-03-14 16:12:36 - No active profile set, falling back to default profiles: default
+2018-03-14 16:12:36 - Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:12:36 IST 2018]; root of context hierarchy
+2018-03-14 16:12:37 - HV000001: Hibernate Validator 5.3.5.Final
+2018-03-14 16:12:38 - Tomcat initialized with port(s): 8080 (http)
+2018-03-14 16:12:38 - Starting service [Tomcat]
+2018-03-14 16:12:38 - Starting Servlet Engine: Apache Tomcat/8.5.16
+2018-03-14 16:12:38 - Initializing Spring embedded WebApplicationContext
+2018-03-14 16:12:38 - Root WebApplicationContext: initialization completed in 1788 ms
+2018-03-14 16:12:38 - Mapping servlet: 'dispatcherServlet' to [/]
+2018-03-14 16:12:38 - Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-03-14 16:12:38 - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-03-14 16:12:38 - Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-03-14 16:12:38 - Mapping filter: 'requestContextFilter' to: [/*]
+2018-03-14 16:12:39 - Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:12:36 IST 2018]; root of context hierarchy
+2018-03-14 16:12:39 - Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-03-14 16:12:39 - Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-03-14 16:12:39 - Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:12:39 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:12:39 - Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:12:39 - Registering beans for JMX exposure on startup
+2018-03-14 16:12:39 - Initializing ProtocolHandler ["http-nio-8080"]
+2018-03-14 16:12:39 - Starting ProtocolHandler ["http-nio-8080"]
+2018-03-14 16:12:39 - Using a shared selector for servlet write/read
+2018-03-14 16:12:39 - Tomcat started on port(s): 8080 (http)
+2018-03-14 16:12:39 - Started SpringbootDemoLoggingApplication in 3.49 seconds (JVM running for 4.533)
+2018-03-14 16:17:12 - Application shutdown requested.
+2018-03-14 16:17:12 - Closing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:12:36 IST 2018]; root of context hierarchy
+2018-03-14 16:17:12 - Unregistering JMX-exposed beans on shutdown
+2018-03-14 16:17:45 - Starting SpringbootDemoLoggingApplication on nexiilabs with PID 8498 (/home/nexii/eclipse-workspace/suryanarayana/springbootDemoLogging/target/classes started by nexii in /home/nexii/eclipse-workspace/suryanarayana/springbootDemoLogging)
+2018-03-14 16:17:45 - Running with Spring Boot v1.5.6.RELEASE, Spring v4.3.10.RELEASE
+2018-03-14 16:17:45 - No active profile set, falling back to default profiles: default
+2018-03-14 16:17:46 - Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:17:46 IST 2018]; root of context hierarchy
+2018-03-14 16:17:46 - HV000001: Hibernate Validator 5.3.5.Final
+2018-03-14 16:17:47 - Tomcat initialized with port(s): 8080 (http)
+2018-03-14 16:17:47 - Starting service [Tomcat]
+2018-03-14 16:17:47 - Starting Servlet Engine: Apache Tomcat/8.5.16
+2018-03-14 16:17:47 - Initializing Spring embedded WebApplicationContext
+2018-03-14 16:17:47 - Root WebApplicationContext: initialization completed in 1940 ms
+2018-03-14 16:17:48 - Mapping servlet: 'dispatcherServlet' to [/]
+2018-03-14 16:17:48 - Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-03-14 16:17:48 - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-03-14 16:17:48 - Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-03-14 16:17:48 - Mapping filter: 'requestContextFilter' to: [/*]
+2018-03-14 16:17:48 - Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:17:46 IST 2018]; root of context hierarchy
+2018-03-14 16:17:48 - Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-03-14 16:17:48 - Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-03-14 16:17:48 - Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:17:48 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:17:48 - Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-03-14 16:17:49 - Registering beans for JMX exposure on startup
+2018-03-14 16:17:49 - Initializing ProtocolHandler ["http-nio-8080"]
+2018-03-14 16:17:49 - Starting ProtocolHandler ["http-nio-8080"]
+2018-03-14 16:17:49 - Using a shared selector for servlet write/read
+2018-03-14 16:17:49 - Tomcat started on port(s): 8080 (http)
+2018-03-14 16:17:49 - Started SpringbootDemoLoggingApplication in 3.799 seconds (JVM running for 4.843)
+2018-03-14 16:27:09 - Application shutdown requested.
+2018-03-14 16:27:09 - Closing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@69930714: startup date [Wed Mar 14 16:17:46 IST 2018]; root of context hierarchy
+2018-03-14 16:27:09 - Unregistering JMX-exposed beans on shutdown

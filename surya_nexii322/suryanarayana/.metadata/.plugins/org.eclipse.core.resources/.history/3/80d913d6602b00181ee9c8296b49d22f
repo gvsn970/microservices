@@ -1,0 +1,5 @@
+package com.nexii.springbootmultipulefileupolads.entity;
+
+public class PhotoEntity {
+
+}

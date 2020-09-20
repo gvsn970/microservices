@@ -1,0 +1,21 @@
+package com.nexiilabs.stp.prospect;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+@Service
+public interface ContactReportsService {
+
+	List<ProspectListResposeDTO> getTodayContactList(int userId);
+
+	ContactCountResponseDTO getContactCount(int userId);
+
+	int getFilterdDateContactCount(String startDate, String endDate, int userId);
+
+	List<ProspectListResposeDTO> getWeeklyContactList(int userId);
+
+	List<ProspectListResposeDTO> getMonthlyContactList(int userId);
+
+	List<ProspectListResposeDTO> getFilteredDateContactList(int userId, String startDate, String endDate);
+
+}

@@ -1,0 +1,175 @@
+package com.nexiilabs.stp.prospect;
+
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Repository;
+
+@Transactional
+@Repository
+public class FollowupReportsRepositoryImpl implements FollowupReportsRepository{
+
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	@Override
+	public int todayFollowupCount(int userId, String localDate,int updatedType) {
+		List<BigInteger> todayCount =null;
+		try{
+			
+			String hql = "select count(sf.followup_id) as todaycount from stp_prospect_followup sf,stp_prospect sp," + 
+					"stp_prospect_company  sc,stp_stage s,stp_meeting_type m where sf.fk_prospect_id= sp.prospect_id and " + 
+					"sp.fk_company_id=sc.company_id and sp.created_by in(SELECT user_id FROM stp_user WHERE " + 
+					"reporting_hierarchy like '%,"+userId+",%' or reporting_hierarchy like '"+userId+",%' or reporting_hierarchy like '%,"+userId+"' or " + 
+					"reporting_hierarchy like '"+userId+"' and delete_status=0) and sf.fk_stage_id=s.stage_id and sf.fk_meeting_id=m.meeting_type_id" + 
+					" and sf.followup_status="+updatedType+"  and sf.next_followup LIKE '" + localDate + "%'" + 
+					" and sf.delete_status=0";
+			todayCount = entityManager.createNativeQuery(hql).getResultList();
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return todayCount.get(0).intValue();
+	}
+
+	@Override
+	public int getFollowupCountInDateRange(int userId, String startDate, String endDate, int updatedType) {
+		List<BigInteger> todayCount =null;
+		try{
+			
+			String hql = "select count(sf.followup_id) as weeklycount from stp_prospect_followup sf,stp_prospect sp," + 
+					"		stp_prospect_company  sc,stp_stage s,stp_meeting_type m where sf.fk_prospect_id= sp.prospect_id and " + 
+					"		sp.fk_company_id=sc.company_id and sp.created_by in(SELECT user_id FROM stp_user WHERE " + 
+					"		reporting_hierarchy like '%,"+userId+",%' or reporting_hierarchy like '"+userId+",%' or reporting_hierarchy like '%,"+userId+"' or " + 
+					"		reporting_hierarchy like '"+userId+"' and delete_status=0) and sf.fk_stage_id=s.stage_id and sf.fk_meeting_id=m.meeting_type_id" + 
+					"		and sf.followup_status="+updatedType+" and CAST(sf.next_followup AS DATE) between '"+startDate+"' and '"+endDate+"' " + 
+					"		and sf.delete_status=0";
+			todayCount = entityManager.createNativeQuery(hql).getResultList();
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return todayCount.get(0).intValue();
+	}
+	
+	@Override
+	public List<FollowupProspectListResponseDTO> todayFollowupReportsList(int userId,String toDay,int updateStatus) {
+		
+		List<FollowupProspectListResponseDTO> followupListResponseDTOList=new ArrayList<FollowupProspectListResponseDTO>();
+		FollowupProspectListResponseDTO followupListResponseDTO=new FollowupProspectListResponseDTO();
+		try{
+			
+			String hql = "select sf.followup_id,m.meeting_type,s.stage_name,sc.company_name,sp.prospect_name,sf.contacted_on,sf.comments,sp.created_on,sp.email,sf.fk_prospect_id,sf.fk_meeting_id,sp.fk_company_id,sf.fk_stage_id,sf.next_followup,sp.first_name,sp.last_name,sp.address1,sp.address2,sp.phone_number,sp.alternate_number,sp.designation,sp.additional_information "
+					+ "from stp_prospect_followup sf,stp_prospect sp,stp_prospect_company  sc,stp_stage s,stp_meeting_type m where sf.fk_prospect_id= sp.prospect_id and sp.fk_company_id=sc.company_id and"
+					+ " sp.created_by in(SELECT user_id FROM stp_user WHERE reporting_hierarchy like '%," + userId
+					+ ",%' or reporting_hierarchy like '" + userId + ",%' or reporting_hierarchy like '%," + userId
+					+ "' or reporting_hierarchy like '" + userId + "' and delete_status=0) and "
+					+ " sf.fk_stage_id=s.stage_id and sf.fk_meeting_id=m.meeting_type_id and sf.followup_status="+updateStatus+" and sf.next_followup LIKE '" + toDay + "%' and sf.delete_status=0";
+			List<Object> followuplist = entityManager.createNativeQuery(hql).getResultList();
+			if (followuplist.size() > 0) {
+				Iterator itr = followuplist.iterator();
+				while (itr.hasNext()) {
+					Object[] obj = (Object[]) itr.next();
+					followupListResponseDTO = new FollowupProspectListResponseDTO();
+					followupListResponseDTO.setFollowupId(Integer.parseInt(String.valueOf(obj[0])));
+					followupListResponseDTO.setMeetingType(String.valueOf(obj[1]));
+					followupListResponseDTO.setStage(String.valueOf(obj[2]));
+					followupListResponseDTO.setCompanyName(String.valueOf(obj[3]));
+					followupListResponseDTO.setProspectName(String.valueOf(obj[4]));
+					followupListResponseDTO.setContactedOn(String.valueOf(obj[5]));
+					followupListResponseDTO.setComments(String.valueOf(obj[6]));
+					followupListResponseDTO.setCreatedOn(String.valueOf(obj[7]));
+					followupListResponseDTO.setEmail(String.valueOf(obj[8]));
+					followupListResponseDTO.setFkProspectId(Integer.parseInt(String.valueOf(obj[9])));
+					followupListResponseDTO.setFkmeetingId(Integer.parseInt(String.valueOf(obj[10])));
+					followupListResponseDTO.setFkCompanyId(Integer.parseInt(String.valueOf(obj[11])));
+					followupListResponseDTO.setFkStageId(Integer.parseInt(String.valueOf(obj[12])));
+					followupListResponseDTO.setNextFollowup(String.valueOf(obj[13]));
+					followupListResponseDTO.setFirstName(String.valueOf(obj[14]));
+					followupListResponseDTO.setLastName(String.valueOf(obj[15]));
+					followupListResponseDTO.setAddress1(String.valueOf(obj[16]));
+					followupListResponseDTO.setAddress2(String.valueOf(obj[17]));
+					followupListResponseDTO.setPhoneNumber(String.valueOf(obj[18]));
+					followupListResponseDTO.setAlternateNumber(String.valueOf(obj[19]));
+					followupListResponseDTO.setDesignation(String.valueOf(obj[20]));
+					followupListResponseDTO.setAdditionalInfo(String.valueOf(obj[21]));
+					followupListResponseDTOList.add(followupListResponseDTO);
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return followupListResponseDTOList;
+	}
+
+	@Override
+	public List<FollowupProspectListResponseDTO> followupReportsList(int userId, String startDate, String endDate,int updatedType) {
+		List<FollowupProspectListResponseDTO> followupListResponseDTOList=new ArrayList<FollowupProspectListResponseDTO>();
+		FollowupProspectListResponseDTO followupListResponseDTO=new FollowupProspectListResponseDTO();
+		try{
+			
+			String hql = "select sf.followup_id,m.meeting_type,s.stage_name,sc.company_name,sp.prospect_name,sf.contacted_on,sf.comments,"
+					+ "sp.created_on,sp.email,sf.fk_prospect_id,sf.fk_meeting_id,sp.fk_company_id,sf.fk_stage_id,"
+					+ "sf.next_followup,sp.first_name,sp.last_name,sp.address1,sp.address2,sp.phone_number,sp.alternate_number,"
+					+ "sp.designation,sp.additional_information from stp_prospect_followup sf,stp_prospect sp," + 
+					"stp_prospect_company  sc,stp_stage s,stp_meeting_type m where sf.fk_prospect_id= sp.prospect_id and " + 
+					"sp.fk_company_id=sc.company_id and sp.created_by in(SELECT user_id FROM stp_user WHERE " + 
+					"reporting_hierarchy like '%,"+userId+",%' or reporting_hierarchy like '"+userId+",%' or reporting_hierarchy like '%,"+userId+"' or " + 
+					"reporting_hierarchy like '"+userId+"' and delete_status=0) and sf.fk_stage_id=s.stage_id and sf.fk_meeting_id=m.meeting_type_id " + 
+					"and sf.followup_status="+updatedType+" and CAST(sf.next_followup AS DATE) between '"+startDate+"' and '"+endDate+"' " + 
+					"and sf.delete_status=0";
+			List<Object> followuplist = entityManager.createNativeQuery(hql).getResultList();
+			if (followuplist.size() > 0) {
+				Iterator itr = followuplist.iterator();
+				while (itr.hasNext()) {
+					Object[] obj = (Object[]) itr.next();
+					followupListResponseDTO = new FollowupProspectListResponseDTO();
+					followupListResponseDTO.setFollowupId(Integer.parseInt(String.valueOf(obj[0])));
+					followupListResponseDTO.setMeetingType(String.valueOf(obj[1]));
+					followupListResponseDTO.setStage(String.valueOf(obj[2]));
+					followupListResponseDTO.setCompanyName(String.valueOf(obj[3]));
+					followupListResponseDTO.setProspectName(String.valueOf(obj[4]));
+					followupListResponseDTO.setContactedOn(String.valueOf(obj[5]));
+					followupListResponseDTO.setComments(String.valueOf(obj[6]));
+					followupListResponseDTO.setCreatedOn(String.valueOf(obj[7]));
+					followupListResponseDTO.setEmail(String.valueOf(obj[8]));
+					followupListResponseDTO.setFkProspectId(Integer.parseInt(String.valueOf(obj[9])));
+					followupListResponseDTO.setFkmeetingId(Integer.parseInt(String.valueOf(obj[10])));
+					followupListResponseDTO.setFkCompanyId(Integer.parseInt(String.valueOf(obj[11])));
+					followupListResponseDTO.setFkStageId(Integer.parseInt(String.valueOf(obj[12])));
+					followupListResponseDTO.setNextFollowup(String.valueOf(obj[13]));
+					followupListResponseDTO.setFirstName(String.valueOf(obj[14]));
+					followupListResponseDTO.setLastName(String.valueOf(obj[15]));
+					followupListResponseDTO.setAddress1(String.valueOf(obj[16]));
+					followupListResponseDTO.setAddress2(String.valueOf(obj[17]));
+					followupListResponseDTO.setPhoneNumber(String.valueOf(obj[18]));
+					followupListResponseDTO.setAlternateNumber(String.valueOf(obj[19]));
+					followupListResponseDTO.setDesignation(String.valueOf(obj[20]));
+					followupListResponseDTO.setAdditionalInfo(String.valueOf(obj[21]));
+					followupListResponseDTOList.add(followupListResponseDTO);
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return followupListResponseDTOList;
+	}
+
+}

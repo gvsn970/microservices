@@ -1,0 +1,752 @@
+package com.nexiilabs.stp.resource;
+
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.nexiilabs.stp.user.CreateUserModel;
+import com.nexiilabs.stp.user.UserResponseDTO;
+
+@RestController
+@RequestMapping("/podetails")
+public class PODetailsController {
+	@Autowired
+	PODetailsService poDetailsService;
+	@Autowired
+	Environment environment;
+
+	@RequestMapping(value = "/uploadSOWFile/{fkEmployeeId}", method = RequestMethod.POST)
+	public UserResponseDTO uploadSOWFile(@PathVariable("fkEmployeeId") int fkEmployeeId,
+			@RequestParam("files") MultipartFile[] uploadfiles, HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		UploadSowModel uploadModel = null;
+		int userId = 0;
+		try {
+			String SOW_FOLDER = environment.getProperty("app.sowuploaddir");
+			String filePath = null;
+			String fileName = null;
+			String UPLOADED_FOLDER = null;
+			List<String> menus = null;
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					userResponseDTO = poDetailsService.createDirectories(fkEmployeeId, SOW_FOLDER);
+					if (userResponseDTO.getStatusCode() != 0 && userResponseDTO.getUploadPath() != null) {
+						UPLOADED_FOLDER = userResponseDTO.getUploadPath();
+						if (uploadfiles.length > 1) {
+							boolean allUploadStatus = true;
+							for (MultipartFile file_object : Arrays.asList(uploadfiles)) {
+								fileName = file_object.getOriginalFilename();
+								filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+								uploadModel = new UploadSowModel();
+								uploadModel.setFileName(fileName);
+								uploadModel.setUploadPath(filePath);
+								uploadModel.setEmployeeId(fkEmployeeId);
+								uploadModel.setCreatedBy(userId);
+								if (poDetailsService.saveFileToDisk(file_object, UPLOADED_FOLDER, fileName, filePath)) {
+									userResponseDTO = poDetailsService.saveUploadSowDetails(uploadModel);
+								} else {
+									allUploadStatus = false;
+								}
+							}
+							if (allUploadStatus) {
+								userResponseDTO.setStatusCode(1);
+								userResponseDTO.setMessage("Sow file uploaded Successfully");
+							} else {
+								poDetailsService.deleteSow(uploadModel);
+								userResponseDTO.setStatusCode(0);
+								userResponseDTO.setMessage("Sow file upload Failed due to File Upload Failure");
+							}
+						} else if (uploadfiles.length == 1) {
+							MultipartFile file_object = uploadfiles[0];
+							if (!file_object.isEmpty()) {
+								fileName = file_object.getOriginalFilename();
+								filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+								uploadModel = new UploadSowModel();
+								uploadModel.setFileName(fileName);
+								uploadModel.setUploadPath(filePath);
+								uploadModel.setEmployeeId(fkEmployeeId);
+								uploadModel.setCreatedBy(userId);
+								if (poDetailsService.saveFileToDisk(file_object, UPLOADED_FOLDER, fileName, filePath)) {
+									userResponseDTO = poDetailsService.saveUploadSowDetails(uploadModel);
+								} else {
+									userResponseDTO.setStatusCode(0);
+									userResponseDTO.setMessage("Sow file upload Failed due to File Upload Failure");
+								}
+							} else {
+								userResponseDTO.setStatusCode(0);
+								userResponseDTO.setMessage("Please upload SOW file");
+							}
+						} else {
+							userResponseDTO.setStatusCode(0);
+							userResponseDTO.setMessage("Please upload SOW file");
+						}
+					} else {
+						userResponseDTO.setStatusCode(0);
+						userResponseDTO.setMessage("Failed to create Directory");
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return userResponseDTO;
+	}
+
+	@RequestMapping(value = "/updateSOWFile/{fkEmployeeId}", method = RequestMethod.POST)
+	public UserResponseDTO updateSOWFile(@PathVariable("fkEmployeeId") int fkEmployeeId,
+			@RequestParam("files") MultipartFile[] uploadfiles, HttpServletRequest request,
+			HttpServletResponse response) {
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		HttpSession userSession = request.getSession(false);
+		try {
+			UploadSowModel uploadModel = null;
+			userResponseDTO = new UserResponseDTO();
+			uploadModel = new UploadSowModel();
+			String SOW_FOLDER = environment.getProperty("app.sowuploaddir");
+			String filePath = null;
+			String fileName = null;
+			String UPLOADED_FOLDER = null;
+			int userId = 0;
+			List<String> menus = null;
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					userResponseDTO = poDetailsService.createDirectories(fkEmployeeId, SOW_FOLDER);
+					if (userResponseDTO.getStatusCode() != 0 && userResponseDTO.getUploadPath() != null) {
+						UPLOADED_FOLDER = userResponseDTO.getUploadPath();
+						if (uploadfiles.length > 1) {
+							boolean allUploadStatus = true;
+							for (MultipartFile file_object : Arrays.asList(uploadfiles)) {
+								fileName = file_object.getOriginalFilename();
+								filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+								uploadModel = new UploadSowModel();
+								uploadModel.setFileName(fileName);
+								uploadModel.setUploadPath(filePath);
+								uploadModel.setEmployeeId(fkEmployeeId);
+								uploadModel.setCreatedBy(userId);
+								if (!poDetailsService.checkFileExistancyForSow(uploadModel)) {
+									if (poDetailsService.saveFileToDisk(file_object, UPLOADED_FOLDER, fileName,
+											filePath)) {
+										userResponseDTO = poDetailsService.updateSOWFile(uploadModel);
+									} else {
+										allUploadStatus = false;
+									}
+								} else {
+									userResponseDTO.setStatusCode(0);
+									userResponseDTO.setMessage("No changes found");
+								}
+
+							}
+							if (allUploadStatus) {
+								userResponseDTO.setStatusCode(1);
+								userResponseDTO.setMessage("Sow file uploaded Successfully");
+							} else {
+								poDetailsService.deleteSow(uploadModel);
+								userResponseDTO.setStatusCode(0);
+								userResponseDTO.setMessage("Sow file upload Failed due to File Upload Failure");
+							}
+						} else if (uploadfiles.length == 1) {
+							MultipartFile file_object = uploadfiles[0];
+							if (!file_object.isEmpty()) {
+								fileName = file_object.getOriginalFilename();
+								filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+								uploadModel = new UploadSowModel();
+								uploadModel.setFileName(fileName);
+								uploadModel.setUploadPath(filePath);
+								uploadModel.setEmployeeId(fkEmployeeId);
+								uploadModel.setCreatedBy(userId);
+								if (!poDetailsService.checkFileExistancyForSow(uploadModel)) {
+									if (poDetailsService.saveFileToDisk(file_object, UPLOADED_FOLDER, fileName,
+											filePath)) {
+										userResponseDTO = poDetailsService.updateSOWFile(uploadModel);
+									} else {
+										userResponseDTO.setStatusCode(0);
+										userResponseDTO.setMessage("Sow file upload Failed due to File Upload Failure");
+									}
+								} else {
+									userResponseDTO.setStatusCode(0);
+									userResponseDTO.setMessage("No changes found");
+								}
+
+							} else {
+								uploadModel.setEmployeeId(fkEmployeeId);
+								userResponseDTO = poDetailsService.getSOWFilesofEmployee(uploadModel);
+								if (userResponseDTO.getStatusCode() != 1) {
+									userResponseDTO.setStatusCode(0);
+									userResponseDTO.setMessage("Please upload SOW file");
+								} else {
+									userResponseDTO.setStatusCode(0);
+									userResponseDTO.setMessage("No changes found.");
+								}
+							}
+						} else {
+							uploadModel.setEmployeeId(fkEmployeeId);
+							userResponseDTO = poDetailsService.getSOWFilesofEmployee(uploadModel);
+							if (userResponseDTO.getStatusCode() != 1) {
+								userResponseDTO.setStatusCode(0);
+								userResponseDTO.setMessage("Please upload SOW file");
+							} else {
+								userResponseDTO.setStatusCode(0);
+								userResponseDTO.setMessage("No chnages found.");
+							}
+						}
+					} else {
+						userResponseDTO.setStatusCode(0);
+						userResponseDTO.setMessage("Failed to create Directory");
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return userResponseDTO;
+	}
+
+	@RequestMapping(value = "/deleteSow/{fkEmployeeId}", method = RequestMethod.POST)
+	public UserResponseDTO deleteSow(@PathVariable("fkEmployeeId") Integer fkEmployeeId, HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		UploadSowModel uploadSowModel = null;
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		int userId = 0;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					uploadSowModel = new UploadSowModel();
+					uploadSowModel.setEmployeeId(fkEmployeeId);
+					uploadSowModel.setDeletedBy(userId);
+					if (uploadSowModel != null) {
+						userResponseDTO = poDetailsService.deleteSow(uploadSowModel);
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			userResponseDTO.setMessage(e.getMessage());
+			userResponseDTO.setStatusCode(0);
+		}
+		return userResponseDTO;
+	}
+
+	@RequestMapping(value = "/addPODetails", method = RequestMethod.POST)
+	public UserResponseDTO addPODetails(@RequestParam("description") String description,
+			@RequestParam("poNumber") String poNumber, @RequestParam("supplierRefNumber") String supplierRefNumber,
+			@RequestParam("currency") String currency, @RequestParam("durationMonths") Integer durationMonths,
+			@RequestParam("unitPrice") Double unitPrice, @RequestParam("startDate") String startDate,
+			@RequestParam("endDate") String endDate, @RequestParam("raisedBy") String raisedBy,
+			@RequestParam("raisedOn") String raisedOn, @RequestParam("fkEmployeeId") Integer fkEmployeeId,
+			@RequestParam("fkCustomerId") Integer fkCustomerId, @RequestParam("files") MultipartFile[] pouploadfiles,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		POModel poModel = null;
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		String UPLOADED_FOLDER = null;
+		String PO_FOLDER = environment.getProperty("app.pouploaddir");
+		String fileName = null;
+		String filePath = null;
+		UploadPOModel uploadModel = null;
+		int userId = 0;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					userResponseDTO = poDetailsService.createDirectories(fkEmployeeId, PO_FOLDER);
+					if (userResponseDTO.getStatusCode() != 0 && userResponseDTO.getUploadPath() != null) {
+						UPLOADED_FOLDER = userResponseDTO.getUploadPath();
+						if (description != null && poNumber != null && supplierRefNumber != null && currency != null
+								&& durationMonths != 0 && unitPrice != 0 && startDate != null && endDate != null
+								&& raisedBy != null && raisedOn != null) {
+							poModel = new POModel();
+							poModel.setCreatedBy(userId);
+							poModel.setDescription(description);
+							poModel.setPoNumber(poNumber);
+							poModel.setSupplierRefNumber(supplierRefNumber);
+							poModel.setCurrency(currency);
+							poModel.setDurationMonths(durationMonths);
+							poModel.setUnitPrice(unitPrice);
+							poModel.setStartDate(startDate);
+							poModel.setEndDate(endDate);
+							poModel.setRaisedBy(raisedBy);
+							poModel.setRaisedOn(raisedOn);
+							poModel.setEmployeeId(fkEmployeeId);
+							userResponseDTO = poDetailsService.addPODetails(poModel, fkCustomerId);
+							int poId = userResponseDTO.getPoId();
+							System.out.println("userResponseDTO::" + userResponseDTO.toString());
+							if (userResponseDTO.getStatusCode() != 2) {
+								if (userResponseDTO.getStatusCode() == 1) {
+									if (pouploadfiles.length > 1) {
+										boolean allUploadStatus = true;
+										for (MultipartFile file_object : Arrays.asList(pouploadfiles)) {
+											fileName = file_object.getOriginalFilename();
+											filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+											uploadModel = new UploadPOModel();
+											uploadModel.setFileName(fileName);
+											uploadModel.setUploadPath(filePath);
+											uploadModel.setEmployeeId(fkEmployeeId);
+											uploadModel.setCreatedBy(userId);
+											uploadModel.setPoId(poId);
+											if (poDetailsService.saveFileToDisk(file_object, UPLOADED_FOLDER, fileName,
+													filePath)) {
+												userResponseDTO = poDetailsService.addPOUploadDetails(uploadModel);
+											} else {
+												allUploadStatus = false;
+											}
+										}
+										if (allUploadStatus) {
+											userResponseDTO.setStatusCode(1);
+											userResponseDTO.setMessage("PO file uploaded Successfully");
+										} else {
+											poDetailsService.deletePODetails(poModel, uploadModel);
+											poDetailsService.updatePOStatusInEmployeeAsZero(uploadModel);
+											userResponseDTO.setStatusCode(0);
+											userResponseDTO
+													.setMessage("PO file upload Failed due to File Upload Failure");
+										}
+									} else if (pouploadfiles.length == 1) {
+										MultipartFile file_object = pouploadfiles[0];
+										if (!file_object.isEmpty()) {
+											fileName = file_object.getOriginalFilename();
+											filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+											uploadModel = new UploadPOModel();
+											uploadModel.setFileName(fileName);
+											uploadModel.setUploadPath(filePath);
+											uploadModel.setEmployeeId(fkEmployeeId);
+											uploadModel.setCreatedBy(userId);
+											uploadModel.setPoId(poId);
+											if (poDetailsService.saveFileToDisk(file_object, UPLOADED_FOLDER, fileName,
+													filePath)) {
+												userResponseDTO = poDetailsService.addPOUploadDetails(uploadModel);
+											} else {
+												poDetailsService.deletePODetails(poModel, uploadModel);
+												poDetailsService.updatePOStatusInEmployeeAsZero(uploadModel);
+												userResponseDTO.setStatusCode(0);
+												userResponseDTO
+														.setMessage("PO file upload Failed due to File Upload Failure");
+											}
+										} else {
+											poDetailsService.deletePODetails(poModel, uploadModel);
+											poDetailsService.updatePOStatusInEmployeeAsZero(uploadModel);
+											userResponseDTO.setStatusCode(0);
+											userResponseDTO.setMessage("Please upload PO file");
+										}
+									} else {
+										poDetailsService.deletePODetails(poModel, uploadModel);
+										poDetailsService.updatePOStatusInEmployeeAsZero(uploadModel);
+										userResponseDTO.setStatusCode(0);
+										userResponseDTO.setMessage("Please upload PO file");
+									}
+								}
+							} else {
+								userResponseDTO.setStatusCode(0);
+								userResponseDTO.setMessage("PO Already Exists");
+							}
+						} else {
+							userResponseDTO.setStatusCode(0);
+							userResponseDTO.setMessage("All input fields are Mandatory");
+						}
+					} else {
+						userResponseDTO.setStatusCode(0);
+						userResponseDTO.setMessage("Failed to create Directory");
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			userResponseDTO.setMessage(e.getMessage());
+			userResponseDTO.setStatusCode(0);
+		}
+		return userResponseDTO;
+	}
+
+	@RequestMapping(value = "/updatePODetails", method = RequestMethod.POST)
+	public UserResponseDTO updatePODetails(@RequestParam("fkEmployeeId") Integer fkEmployeeId,
+			@RequestParam("fkCustomerId") Integer fkCustomerId, @RequestParam("description") String description,
+			@RequestParam("poNumber") String poNumber, @RequestParam("supplierRefNumber") String supplierRefNumber,
+			@RequestParam("currency") String currency, @RequestParam("durationMonths") Integer durationMonths,
+			@RequestParam("unitPrice") Double unitPrice, @RequestParam("startDate") String startDate,
+			@RequestParam("endDate") String endDate, @RequestParam("raisedBy") String raisedBy,
+			@RequestParam("raisedOn") String raisedOn, @RequestParam("files") MultipartFile[] pouploadfiles,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		POModel poModel = null;
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		String UPLOADED_FOLDER = null;
+		String PO_FOLDER = environment.getProperty("app.pouploaddir");
+		String fileName = null;
+		String filePath = null;
+		UploadPOModel uploadModel = null;
+		int userId = 0;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					poModel = new POModel();
+					poModel.setUpdatedBy(userId);
+					poModel.setEmployeeId(fkEmployeeId);
+					poModel.setPoNumber(poNumber);
+					poModel.setDescription(description);
+					poModel.setSupplierRefNumber(supplierRefNumber);
+					poModel.setCurrency(currency);
+					poModel.setDurationMonths(durationMonths);
+					poModel.setUnitPrice(unitPrice);
+					poModel.setStartDate(startDate);
+					poModel.setEndDate(endDate);
+					poModel.setRaisedBy(raisedBy);
+					poModel.setRaisedOn(raisedOn);
+					userResponseDTO = poDetailsService.createDirectories(fkEmployeeId, PO_FOLDER);
+					if (userResponseDTO.getStatusCode() != 0 && userResponseDTO.getUploadPath() != null) {
+						UPLOADED_FOLDER = userResponseDTO.getUploadPath();
+						if (poNumber != null && description != null && supplierRefNumber != null && currency != null
+								&& durationMonths != 0 && unitPrice != 0 && startDate != null && endDate != null
+								&& raisedBy != null && raisedOn != null) {
+							userResponseDTO = poDetailsService.updatePODetails(poModel, fkCustomerId);
+							System.err.println("after update::::::" + userResponseDTO.toString());
+							System.err.println("pouploadfiles.length:::" + pouploadfiles.length);
+							int poId = userResponseDTO.getPoId();
+							if (userResponseDTO.getStatusCode() == 1) {
+								uploadModel = new UploadPOModel();
+								uploadModel.setEmployeeId(fkEmployeeId);
+								if (pouploadfiles.length > 1) {
+									boolean allUploadStatus = true;
+									for (MultipartFile file_object : Arrays.asList(pouploadfiles)) {
+										fileName = file_object.getOriginalFilename();
+										filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+										uploadModel = new UploadPOModel();
+										uploadModel.setFileName(fileName);
+										uploadModel.setUploadPath(filePath);
+										uploadModel.setEmployeeId(fkEmployeeId);
+										uploadModel.setCreatedBy(userId);
+										uploadModel.setPoId(poId);
+										if (!poDetailsService.checkFileExistancyForPO(uploadModel, poModel)) {
+											if (poDetailsService.saveFileToDisk(file_object, UPLOADED_FOLDER, fileName,
+													filePath)) {
+												userResponseDTO = poDetailsService.updatePOUploadDetails(uploadModel);
+											} else {
+												allUploadStatus = false;
+											}
+										} else {
+											userResponseDTO.setStatusCode(0);
+											userResponseDTO.setMessage("No changes found");
+										}
+									}
+									if (allUploadStatus) {
+										userResponseDTO.setStatusCode(1);
+										userResponseDTO.setMessage("PO file updated Successfully");
+									} else {
+										userResponseDTO.setStatusCode(0);
+										userResponseDTO.setMessage("PO file updation Failed due to File Upload Failure");
+									}
+								} else if (pouploadfiles.length == 1) {
+									MultipartFile file_object = pouploadfiles[0];
+									if (!file_object.isEmpty()) {
+										fileName = file_object.getOriginalFilename();
+										filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+										uploadModel = new UploadPOModel();
+										uploadModel.setFileName(fileName);
+										uploadModel.setUploadPath(filePath);
+										uploadModel.setEmployeeId(fkEmployeeId);
+										uploadModel.setCreatedBy(userId);
+										uploadModel.setPoId(poId);
+										if (!poDetailsService.checkFileExistancyForPO(uploadModel, poModel)) {
+											if (poDetailsService.saveFileToDisk(file_object, UPLOADED_FOLDER, fileName,
+													filePath)) {
+												userResponseDTO = poDetailsService.updatePOUploadDetails(uploadModel);
+												userResponseDTO.setStatusCode(1);
+												userResponseDTO.setMessage("PO File updated successfully");
+											} else {
+												userResponseDTO.setStatusCode(0);
+												userResponseDTO.setMessage(
+														"PO file upload update Failed due to File Upload Failure");
+											}
+
+										} else {
+											userResponseDTO.setStatusCode(0);
+											userResponseDTO.setMessage("No changes found");
+										}
+
+									} else {
+
+										userResponseDTO = poDetailsService.getPOFilesofEmployee(uploadModel);
+										if (userResponseDTO.getStatusCode() != 1) {
+											poDetailsService.deletePODetails(poModel, uploadModel);
+											poDetailsService.updatePOStatusInEmployeeAsZero(uploadModel);
+											userResponseDTO.setStatusCode(0);
+											userResponseDTO.setMessage("Please upload PO file");
+										} else {
+											userResponseDTO.setStatusCode(1);
+											userResponseDTO.setMessage("PO Details updated successfully");
+										}
+
+									}
+								} else {
+									userResponseDTO.setStatusCode(1);
+									userResponseDTO.setMessage("PO Details updated successfully");
+								}
+							} else if (userResponseDTO.getStatusCode() == 2) {
+								if (pouploadfiles.length > 0) {
+									if (pouploadfiles[0].isEmpty()) {
+										userResponseDTO.setStatusCode(0);
+										userResponseDTO.setMessage("No Changes found");
+									} else {
+										boolean allUploadStatus = true;
+										boolean fileexist = false;
+										for (MultipartFile file : Arrays.asList(pouploadfiles)) {
+											fileName = file.getOriginalFilename();
+											filePath = Paths.get(UPLOADED_FOLDER, fileName).toString();
+											userResponseDTO = new UserResponseDTO();
+											uploadModel = new UploadPOModel();
+											uploadModel.setFileName(fileName);
+											uploadModel.setUploadPath(filePath);
+											uploadModel.setEmployeeId(fkEmployeeId);
+											uploadModel.setCreatedBy(userId);
+											uploadModel.setPoId(poId);
+											if (!file.isEmpty()) {
+												try {
+													if (!poDetailsService.checkFileExistancyForPO(uploadModel,
+															poModel)) {
+														if (poDetailsService.saveFileToDisk(file, UPLOADED_FOLDER,
+																fileName, filePath)) {
+															userResponseDTO = poDetailsService
+																	.updatePOUploadDetails(uploadModel);
+														} else {
+															allUploadStatus = false;
+														}
+													} else {
+														fileexist = true;
+														userResponseDTO.setStatusCode(0);
+														userResponseDTO.setMessage("No changes found");
+													}
+												} catch (Exception e) {
+													allUploadStatus = false;
+													userResponseDTO.setStatusCode(0);
+													userResponseDTO.setMessage("PO file update  Upload Failure");
+												}
+											}
+										}
+										if (allUploadStatus && fileexist) {
+											userResponseDTO.setStatusCode(0);
+											userResponseDTO.setMessage("No changes found");
+
+										} else {
+											userResponseDTO.setStatusCode(1);
+											userResponseDTO.setMessage("PO Details updated successfully");
+										}
+									}
+								}
+
+							}
+						} else {
+							userResponseDTO.setStatusCode(0);
+							userResponseDTO.setMessage("All input fields are Mandatory");
+						}
+					} else {
+						userResponseDTO.setStatusCode(0);
+						userResponseDTO.setMessage("Failed to create Directory");
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			userResponseDTO.setMessage(e.getMessage());
+			userResponseDTO.setStatusCode(0);
+		}
+		return userResponseDTO;
+	}
+
+	@RequestMapping(value = "/deletePODetails/{fkEmployeeId}", method = RequestMethod.POST)
+	public UserResponseDTO deletePODetails(@PathVariable("fkEmployeeId") Integer fkEmployeeId,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		POModel poModel = null;
+		UploadPOModel uploadModel = null;
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		int userId = 0;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				userId = userModel.getUserId();
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					poModel = new POModel();
+					poModel.setDeletedBy(userId);
+					poModel.setEmployeeId(fkEmployeeId);
+					uploadModel = new UploadPOModel();
+					uploadModel.setEmployeeId(fkEmployeeId);
+					uploadModel.setDeletedBy(userId);
+					if (poModel != null && uploadModel != null) {
+						userResponseDTO = poDetailsService.deletePODetails(poModel, uploadModel);
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			userResponseDTO.setMessage(e.getMessage());
+			userResponseDTO.setStatusCode(0);
+		}
+		return userResponseDTO;
+	}
+
+	@RequestMapping(value = "/poList", method = RequestMethod.GET)
+	public List<POListResponseDTO> getPOList(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		List<POListResponseDTO> poListResponseDTO = null;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					poListResponseDTO = poDetailsService.getPOList();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return poListResponseDTO;
+	}
+
+	@RequestMapping(value = "/deletePOFiles/{fileId}/{fkEmployeeId}", method = RequestMethod.POST)
+	public UserResponseDTO deletePOFiles(@PathVariable("fkEmployeeId") Integer fkEmployeeId,
+			@PathVariable("fileId") Integer fileId, HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		UploadPOModel uploadPOModel = null;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					uploadPOModel = new UploadPOModel();
+					uploadPOModel.setEmployeeId(fkEmployeeId);
+					userResponseDTO = poDetailsService.getPOFilesofEmployee(uploadPOModel);
+					System.out.println("userResponseDTO:::::::::::" + userResponseDTO.toString());
+					if (userResponseDTO.getNoOfPOfiles() > 1) {
+						userResponseDTO = poDetailsService.deletePOFiles(fileId, fkEmployeeId);
+					} else {
+						userResponseDTO.setMessage(
+								"Atleast One file should be there,If you want to delete first upload a file and delete existing one");
+						userResponseDTO.setStatusCode(0);
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userResponseDTO;
+
+	}
+
+	@RequestMapping(value = "/deleteSOWFiles/{fileId}/{fkEmployeeId}", method = RequestMethod.POST)
+	public UserResponseDTO deleteSOWFiles(@PathVariable("fkEmployeeId") Integer fkEmployeeId,
+			@PathVariable("fileId") Integer fileId, HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		UserResponseDTO userResponseDTO = new UserResponseDTO();
+		UploadSowModel uploadSowModel = null;
+		List<String> menus = null;
+		try {
+			if (userSession != null) {
+				menus = (List<String>) userSession.getAttribute("menuPermissions");
+				if (menus.contains("Resources")) {
+					uploadSowModel = new UploadSowModel();
+					uploadSowModel.setEmployeeId(fkEmployeeId);
+					userResponseDTO = poDetailsService.getSOWFilesofEmployee(uploadSowModel);
+					System.out.println("userResponseDTO:::::::::::" + userResponseDTO.toString());
+					if (userResponseDTO.getNoOfSowfiles() > 1) {
+						userResponseDTO = poDetailsService.deleteSOWFiles(fileId, fkEmployeeId);
+					} else {
+						userResponseDTO.setMessage(
+								"Atleast One file should be there,If you want to delete first upload a file and delete existing one");
+						userResponseDTO.setStatusCode(0);
+					}
+				} else {
+					userResponseDTO.setStatusCode(0);
+					userResponseDTO.setMessage("Not permitted to access the service");
+				}
+			} else {
+				userResponseDTO.setStatusCode(0);
+				userResponseDTO.setMessage("Login Required to Access this service");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userResponseDTO;
+
+	}
+
+}

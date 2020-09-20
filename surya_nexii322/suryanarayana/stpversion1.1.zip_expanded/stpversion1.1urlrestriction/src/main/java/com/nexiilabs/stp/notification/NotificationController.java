@@ -1,0 +1,188 @@
+package com.nexiilabs.stp.notification;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.nexiilabs.stp.authentication.UtilitiesService;
+import com.nexiilabs.stp.user.CreateUserModel;
+
+@RestController
+@RequestMapping("/notification")
+public class NotificationController {
+	private static final Logger log = LogManager.getLogger(NotificationController.class);
+	@Autowired
+	NotificationService notificationService;
+	@Autowired
+	UtilitiesService utilitiesService;
+
+	@RequestMapping("/welcome")
+	public String getMsg() {
+		log.info("In Notification List Controller");
+		return "NotificationListRESTService";
+	}
+	@RequestMapping(value = "/getNotificationList", method = RequestMethod.GET)
+	public NotificationListResponseDTO getNotificationList(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		NotificationListResponseDTO notificationListResponseDTO = null;
+		try {
+			if(userSession!=null){
+				CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+				List<String> menuList=(List<String>) userSession.getAttribute("menuPermissions");
+				if(menuList.contains("Bench")||menuList.contains("Invoices")||menuList.contains("Resources")||menuList.contains("Prospects")||menuList.contains("Reports")){
+					notificationListResponseDTO = notificationService.getNotificationList(userModel.getUserId());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return notificationListResponseDTO;
+	}
+	
+	@RequestMapping(value = "/getNotificationPanel", method = RequestMethod.GET)
+	public String getNotificationPanel(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession userSession = request.getSession(false);
+		String notificationPanel= "";
+		String logout="";
+		NotificationListResponseDTO notificationListResponseDTO = null;
+		if(userSession!=null){
+			CreateUserModel userModel = (CreateUserModel) userSession.getAttribute("userModel");
+			try {
+			notificationListResponseDTO = notificationService.getNotificationList(userModel.getUserId());
+			String resourceNotification="<li class=\"dropdown\">"
+					+ "<a href=\"#\" class=\"dropdown-toggle waves-effect waves-light\" data-toggle=\"dropdown\" "
+					+ "role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><i class=\"md md-account-circle\"></i> "
+					+ "<span class=\"badge badge-xs badge-danger\" style=\"display: "
+					+ (notificationListResponseDTO.getInactiveCount()>0?"block":"none")
+					+ ";\">"+notificationListResponseDTO.getInactiveCount()+"</span></a>"
+					+ "<ul class=\"dropdown-menu dropdown-menu-lg\">"
+					+ "<li class=\"notifi-title\">Notifications</li>"
+					+ "<li class=\"list-group slimscroll-noti notification-list\">"
+					+ "<a href=\"inactive_resources\" class=\"list-group-item\">"
+                    + "<div class=\"media\">"
+                    + "<div class=\"media-body\">"
+                    + "<h5 class=\"media-heading\">Resources</h5>"
+                    + "<p class=\"m-0\">"
+                    + "<small>You have <span class=\"text-primary font-600\">"+notificationListResponseDTO.getInactiveCount()+" inactive resources</span></small>"
+                    + "</p>"
+                    + "</div>"
+                    + "</div>"
+                    + "</a>"
+                    + "</li>"
+                    + "</ul>"
+                    + "</li>";
+			
+			String invoiceReqNotification="<li class=\"dropdown\">"
+					+ "<a href=\"#\" class=\"dropdown-toggle waves-effect waves-light\" data-toggle=\"dropdown\" "
+					+ "role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><i class=\"md md-receipt\"></i> "
+					+ "<span class=\"badge badge-xs badge-danger\"style=\"display: "
+					+ (notificationListResponseDTO.getInvoiceRequestCount()>0?"block":"none")
+					+ ";\">"+notificationListResponseDTO.getInvoiceRequestCount()+"</span></a>"
+					+ "<ul class=\"dropdown-menu dropdown-menu-lg\">"
+					+ "<li class=\"notifi-title\">Notifications</li>"
+					+ "<li class=\"list-group slimscroll-noti notification-list\">"
+					+ "<a href=\"request_invoices\" class=\"list-group-item\">"
+                    + "<div class=\"media\">"
+                    + "<div class=\"media-body\">"
+                    + "<h5 class=\"media-heading\">Invoice Requests</h5>"
+                    + "<p class=\"m-0\">"
+                    + "<small>You have <span class=\"text-primary font-600\">"+notificationListResponseDTO.getInvoiceRequestCount()+" Invoice Requests</span></small>"
+                    + "</p>"
+                    + "</div>"
+                    + "</div>"
+                    + "</a>"
+                    + "</li>"
+                    + "</ul>"
+                    + "</li>";
+			
+			String benchNotification="<li class=\"dropdown\">"
+					+ "<a href=\"#\" class=\"dropdown-toggle waves-effect waves-light\" data-toggle=\"dropdown\" "
+					+ "role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><i class=\"md md-contacts\"></i> "
+					+ "<span class=\"badge badge-xs badge-danger\" style=\"display: "
+					+ (notificationListResponseDTO.getBenchCount()>0?"block":"none")
+					+ ";\">"+notificationListResponseDTO.getBenchCount()+"</span></a>"
+					+ "<ul class=\"dropdown-menu dropdown-menu-lg\">"
+					+ "<li class=\"notifi-title\">Notifications</li>"
+					+ "<li class=\"list-group slimscroll-noti notification-list\">"
+					+ "<a href=\"bench\" class=\"list-group-item\">"
+                    + "<div class=\"media\">"
+                    + "<div class=\"media-body\">"
+                    + "<h5 class=\"media-heading\">Bench</h5>"
+                    + "<p class=\"m-0\">"
+                    + "<small>There are <span class=\"text-primary font-600\">"+notificationListResponseDTO.getBenchCount()+" members</span> on bench</small>"
+                    + "</p>"
+                    + "</div>"
+                    + "</div>"
+                    + "</a>"
+                    + "</li>"
+                    + "</ul>"
+                    + "</li>";
+			String prospectNotification="<li class=\"dropdown\">"
+					+ "<a href=\"#\" class=\"dropdown-toggle waves-effect waves-light\" data-toggle=\"dropdown\" "
+					+ "role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><i class=\"icon-user-following\"></i> "
+					+ "<span class=\"badge badge-xs badge-danger\" style=\"display: "
+					+ (notificationListResponseDTO.getProspectCount()>0?"block":"none")
+					+ ";\">"+notificationListResponseDTO.getProspectCount()+"</span></a>"
+					+ "<ul class=\"dropdown-menu dropdown-menu-lg\">"
+					+ "<li class=\"notifi-title\">Notifications</li>"
+					+ "<li class=\"list-group slimscroll-noti notification-list\">"
+					+ "<a href=\"prospects-followups\" class=\"list-group-item\">"
+                    + "<div class=\"media\">"
+                    + "<div class=\"media-body\">"
+                    + "<h5 class=\"media-heading\">Prospects</h5>"
+                    + "<p class=\"m-0\">"
+                    + "<small>You have <span class=\"text-primary font-600\">"+notificationListResponseDTO.getProspectCount()+" prospects</span> in  Todays followup</small>"
+                    + "</p>"
+                    + "</div>"
+                    + "</div>"
+                    + "</a>"
+                    + "</li>"
+                    + "</ul>"
+                    + "</li>";
+			
+			logout="<li class=\"dropdown top-menu-item-xs\">"
+					+ "<a href=\"#\" class=\"dropdown-toggle profile waves-effect waves-light\" data-toggle=\"dropdown\" aria-expanded=\"true\">"
+					+ "<img src=\"assets/images/users/avatar-1.jpg\" alt=\"user-img\" class=\"img-circle\"> </a>"
+					+ "<ul class=\"dropdown-menu\">"
+					+ "<li><a href=\"changepw\"><i class=\"ti-key m-r-10 text-custom\"></i> Change Password</a></li>"
+					+ "<li class=\"divider\"></li>"
+					+ "<li><a href=\"#\" onclick=\"logout();\"><i class=\"ti-power-off m-r-10 text-danger\"></i> Logout</a></li>"
+					+ "</ul>"
+					+ "</li>";
+        
+			List<String> menuList=utilitiesService.getMenuPermissions(userModel.getRoleId());
+			for (String menu : menuList) {
+				//System.out.println("Menu Item Name : "+menu);
+				switch (menu) {
+				case "Resources":
+					notificationPanel= notificationPanel+resourceNotification;
+					break;
+				case "Invoices":
+					notificationPanel= notificationPanel+invoiceReqNotification;
+					break;
+				case "Bench":
+					notificationPanel= notificationPanel+benchNotification;
+					break;
+				case "Prospects":
+					notificationPanel= notificationPanel+prospectNotification;
+					break;
+				default:
+					break;
+				}
+			}	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return notificationPanel+logout;
+	}
+}

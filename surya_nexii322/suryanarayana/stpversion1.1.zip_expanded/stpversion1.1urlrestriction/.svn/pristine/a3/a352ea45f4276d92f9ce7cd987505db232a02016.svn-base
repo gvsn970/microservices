@@ -1,0 +1,226 @@
+package com.nexiilabs.stp.prospect;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class FollowupReportsServiceImpl implements FollowupReportsService{
+
+	@Autowired
+	FollowupReportsRepository followupReportsRepository;
+
+	@Override
+	public FollowupReportsCountModel followupReportsCounts(int userId) {
+		FollowupReportsCountModel followupReportsCountModel=new FollowupReportsCountModel();
+		LocalDate today = LocalDate.now();
+
+		// Go backward to get Monday
+		LocalDate monday = today;
+		while (monday.getDayOfWeek() != DayOfWeek.MONDAY)
+		{
+			monday = monday.minusDays(1);
+		}
+
+		// Go forward to get Sunday
+		LocalDate sunday = today;
+		while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY)
+		{
+		  sunday = sunday.plusDays(1);
+		}
+
+		System.out.println("Today: " + today);
+		System.out.println("Monday of the Week: " + monday);
+		System.out.println("Sunday of the Week: " + sunday);
+		String startDate=monday+"";
+		String endDate=sunday+"";
+				
+		//today updated count
+		int updatedType=1;
+		int todayUpdatedCount=followupReportsRepository.todayFollowupCount(userId,LocalDate.now().toString(),updatedType);
+		followupReportsCountModel.setTodayUpdateCount(todayUpdatedCount);
+		//today not updated count
+		updatedType=0;
+		int todayNotUpdatedCount=followupReportsRepository.todayFollowupCount(userId,LocalDate.now().toString(),updatedType);
+		followupReportsCountModel.setTodayNotUpdateCount(todayNotUpdatedCount);
+		
+		//weekly updatedcount
+		updatedType=1;
+		int weeklyUpdatedCount=followupReportsRepository.getFollowupCountInDateRange(userId,startDate,endDate,updatedType);
+		followupReportsCountModel.setWeeklyUpdateCount(weeklyUpdatedCount);
+		//weekly not updated count
+		updatedType=0;
+		int weeklyNotUpdatedCount=followupReportsRepository.getFollowupCountInDateRange(userId,startDate,endDate,updatedType);
+		followupReportsCountModel.setWeeklyNotUpdateCount(weeklyNotUpdatedCount);
+		
+		//current month updated count
+		startDate=today.withDayOfMonth(1).toString();
+		endDate=today.withDayOfMonth(today.lengthOfMonth()).toString();
+        updatedType=1;
+        int monthlyUpdatedCount=followupReportsRepository.getFollowupCountInDateRange(userId,startDate,endDate,updatedType);
+        followupReportsCountModel.setMonthlyUpdateCount(monthlyUpdatedCount);
+        //current month not updated count 
+        updatedType=0;
+        int monthlyNotUpdatedCount=followupReportsRepository.getFollowupCountInDateRange(userId,startDate,endDate,updatedType);
+        followupReportsCountModel.setMonthlyNotUpdateCount(monthlyNotUpdatedCount);
+        
+		// 2 months updated count
+		startDate = today.minusMonths(1).withDayOfMonth(1).toString();
+		endDate = today.withDayOfMonth(today.lengthOfMonth()).toString();
+		updatedType = 1;
+		int dateRangeUpdatedCount = followupReportsRepository.getFollowupCountInDateRange(userId, startDate, endDate,updatedType);
+		followupReportsCountModel.setDateRangeUpdateCount(dateRangeUpdatedCount);;
+		// 2 months not updated count
+		updatedType = 0;
+		int dateRangeNotUpdatedCount = followupReportsRepository.getFollowupCountInDateRange(userId, startDate, endDate,updatedType);
+		followupReportsCountModel.setDateRangeNotUpdateCount(dateRangeNotUpdatedCount);
+		followupReportsCountModel.setStartDate(startDate);
+		followupReportsCountModel.setEndDate(endDate);
+
+		return followupReportsCountModel;
+	}
+	@Override
+	public FollowupReportsCountModel dateRangefollowupReportsCounts(int userId, String startDate, String endDate) {
+		// 2 months updated count
+		FollowupReportsCountModel followupReportsCountModel=new FollowupReportsCountModel();
+		int updatedType = 1;
+		int dateRangeUpdatedCount = followupReportsRepository.getFollowupCountInDateRange(userId, startDate, endDate,updatedType);
+		followupReportsCountModel.setDateRangeUpdateCount(dateRangeUpdatedCount);;
+		// 2 months not updated count
+		updatedType = 0;
+		int dateRangeNotUpdatedCount = followupReportsRepository.getFollowupCountInDateRange(userId, startDate, endDate,updatedType);
+		followupReportsCountModel.setDateRangeNotUpdateCount(dateRangeNotUpdatedCount);
+		followupReportsCountModel.setStartDate(startDate);
+		followupReportsCountModel.setEndDate(endDate);
+
+		return followupReportsCountModel;
+	}
+
+	
+	@Override
+	public List<FollowupProspectListResponseDTO> todayUpdatedFollowupReportsList(int userId) {
+		List<FollowupProspectListResponseDTO> list=new ArrayList<FollowupProspectListResponseDTO>();
+		int updatedType=1; 
+		list=followupReportsRepository.todayFollowupReportsList(userId,LocalDate.now().toString(),updatedType);
+		
+		return list;
+	}
+
+	@Override
+	public List<FollowupProspectListResponseDTO> todayNotUpdatedFollowupReportsList(int userId) {
+		List<FollowupProspectListResponseDTO> list=new ArrayList<FollowupProspectListResponseDTO>();
+		int updatedType=0; 
+		list=followupReportsRepository.todayFollowupReportsList(userId,LocalDate.now().toString(),updatedType);
+		
+		return list;
+	}
+
+	@Override
+	public List<FollowupProspectListResponseDTO> weeklyUpdatedFollowupReportsList(int userId) {
+		List<FollowupProspectListResponseDTO> list=new ArrayList<FollowupProspectListResponseDTO>();
+		LocalDate today = LocalDate.now();
+
+		// Go backward to get Monday
+		LocalDate monday = today;
+		while (monday.getDayOfWeek() != DayOfWeek.MONDAY)
+		{
+			monday = monday.minusDays(1);
+		}
+
+		// Go forward to get Sunday
+		LocalDate sunday = today;
+		while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY)
+		{
+		  sunday = sunday.plusDays(1);
+		}
+
+		System.out.println("Today: " + today);
+		System.out.println("Monday of the Week: " + monday);
+		System.out.println("Sunday of the Week: " + sunday);
+		String startDate=monday+"";
+		String endDate=sunday+"";
+		int updatedType=1; 
+		list=followupReportsRepository.followupReportsList(userId,startDate,endDate,updatedType);
+		
+		return list;
+	}
+
+	@Override
+	public List<FollowupProspectListResponseDTO> weeklyNotUpdatedFollowupReportsList(int userId) {
+		List<FollowupProspectListResponseDTO> list=new ArrayList<FollowupProspectListResponseDTO>();
+		LocalDate today = LocalDate.now();
+
+		// Go backward to get Monday
+		LocalDate monday = today;
+		while (monday.getDayOfWeek() != DayOfWeek.MONDAY)
+		{
+			monday = monday.minusDays(1);
+		}
+
+		// Go forward to get Sunday
+		LocalDate sunday = today;
+		while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY)
+		{
+		  sunday = sunday.plusDays(1);
+		}
+
+		System.out.println("Today: " + today);
+		System.out.println("Monday of the Week: " + monday);
+		System.out.println("Sunday of the Week: " + sunday);
+		String startDate=monday+"";
+		String endDate=sunday+"";
+		int updatedType=0; 
+		list=followupReportsRepository.followupReportsList(userId,startDate,endDate,updatedType);
+		
+		return list;
+	}
+
+	@Override
+	public List<FollowupProspectListResponseDTO> monthlyUpdatedFollowupReportsList(int userId) {
+		List<FollowupProspectListResponseDTO> list=new ArrayList<FollowupProspectListResponseDTO>();
+		LocalDate today = LocalDate.now();
+		String startDate=today.withDayOfMonth(1).toString();
+		String endDate=today.withDayOfMonth(today.lengthOfMonth()).toString();
+        int updatedType=1;
+        list=followupReportsRepository.followupReportsList(userId,startDate,endDate,updatedType);
+		return list;
+	}
+
+	@Override
+	public List<FollowupProspectListResponseDTO> monthlyNotUpdatedFollowupReportsList(int userId) {
+		List<FollowupProspectListResponseDTO> list=new ArrayList<FollowupProspectListResponseDTO>();
+		LocalDate today = LocalDate.now();
+		String startDate=today.withDayOfMonth(1).toString();
+		String endDate=today.withDayOfMonth(today.lengthOfMonth()).toString();
+        int updatedType=0;
+        list=followupReportsRepository.followupReportsList(userId,startDate,endDate,updatedType);
+		return list;
+	}
+
+	@Override
+	public List<FollowupProspectListResponseDTO> dateRangeUpdatedFollowupReportsList(int userId) {
+		List<FollowupProspectListResponseDTO> list=new ArrayList<FollowupProspectListResponseDTO>();
+		LocalDate today = LocalDate.now();
+		String startDate = today.minusMonths(1).withDayOfMonth(1).toString();
+		String endDate = today.withDayOfMonth(today.lengthOfMonth()).toString();
+		int updatedType = 1;
+        list=followupReportsRepository.followupReportsList(userId,startDate,endDate,updatedType);
+		return list;
+	}
+
+	@Override
+	public List<FollowupProspectListResponseDTO> dateRangeNotUpdatedFollowupReportsList(int userId) {
+		List<FollowupProspectListResponseDTO> list=new ArrayList<FollowupProspectListResponseDTO>();
+		LocalDate today = LocalDate.now();
+		String startDate = today.minusMonths(1).withDayOfMonth(1).toString();
+		String endDate = today.withDayOfMonth(today.lengthOfMonth()).toString();
+		int updatedType = 0;
+        list=followupReportsRepository.followupReportsList(userId,startDate,endDate,updatedType);
+		return list;
+	}
+
+}

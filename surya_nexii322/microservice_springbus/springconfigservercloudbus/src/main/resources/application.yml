@@ -1,0 +1,29 @@
+server:
+  port: 8090
+  
+management:
+  security:
+    enabled: false 
+    
+  
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/gvsna2/springconfigRepo
+          #username:
+          #password:
+          search-paths:
+          - emp* 
+          
+          
+          
+
+
+
+          
+       
+           
+              
+           

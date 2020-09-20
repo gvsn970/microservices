@@ -1,0 +1,4 @@
+127.0.0.1 - - [19/Mar/2018:18:18:57 +0530] "GET / HTTP/1.1" 404 994
+127.0.0.1 - - [19/Mar/2018:18:19:03 +0530] "GET /springbootmultipulefileupolads/WEB-INF/classes/com/nexii/springbootmultipulefileupolads/controller/ProductController.java HTTP/1.1" 404 992
+127.0.0.1 - - [19/Mar/2018:18:19:13 +0530] "GET / HTTP/1.1" 404 994
+127.0.0.1 - - [19/Mar/2018:18:19:14 +0530] "GET / HTTP/1.1" 404 994

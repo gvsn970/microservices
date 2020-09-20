@@ -1,0 +1,24 @@
+endpoints:
+ restart:
+  enabled: true
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8090/eureka/
+      registerWithEureka: true
+      
+zuul:
+  prefix: /empdetailes
+  routes:
+   consumer:
+     path: /consumer/**
+     service-id: emplyoee-consumer
+ribbon: 
+    eureka:
+        enabled: true
+    
+server:
+   port: 8094 

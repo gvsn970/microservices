@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="springcloud"/>
+<aop-project name="DemoH2Database"/>
+<aop-project name="nexiilab"/>
+<aop-project name="SpringBootFirstExample"/>
+<aop-project name="DemoMVCMock"/>
+<aop-project name="springbootDemoActuator"/>
+<aop-project name="restwebService"/>
+<aop-project name="spring-boot-fileupload"/>
+<aop-project name="springbootNew"/>
+<aop-project name="fileupload"/>
+<aop-project name="springbootsecurity"/>
+<aop-project name="DemoSSL"/>
+<aop-project name="Demoscheduler"/>
+<aop-project name="springbootDemoLogging"/>
+<aop-project name="DemoErrormanagement"/>
+<aop-project name="sendingmail"/>
+<aop-project name="bootsample"/>
+<aop-project name="springboot"/>
+<aop-project name="SpringBootExample"/>
+<aop-project name="DemoCacheData"/>
+<aop-project name="MultipleFileUpload"/>
+<aop-project name="WebMockitoDemo"/>
+<aop-project name="sendmailinspringboot"/>
+</aop-reference-model>

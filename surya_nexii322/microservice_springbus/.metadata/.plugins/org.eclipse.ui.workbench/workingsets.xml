@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1526370065013_1" label="springconfigclientcloudbus" name="springconfigclientcloudbus">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/springconfigclientcloudbus" type="4"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1526370082148_2" label="springconfigservercloudbus" name="springconfigservercloudbus">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/springconfigservercloudbus" type="4"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1526289760929_0" label="Window Working Set" name="Aggregate for window 1526289760928"/>
+</workingSetManager>

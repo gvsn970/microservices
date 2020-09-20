@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.jdt.debug.ui.MAIN_METHOD_SELECTION_DIALOG">
+		<item value="true" key="ShowStatusLine"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode&gt;&#x0A;&lt;infoNode&gt;=SpringBootExample/src\/main\/java&amp;lt;com.nexiilab.springbootexample{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=bootsample/src\/main\/java&amp;lt;bootsample{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=nexiilab/src\/main\/java&amp;lt;com.nexii.nexiilab.Controller{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=nexiilab/src\/main\/java&amp;lt;com.nexii.nexiilab.application{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=fileUpload/src\/main\/java&amp;lt;com.nexii.fileUpload{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=sendmailinspringboot/src\/main\/java&amp;lt;com.nexii.sendmailinspringboot{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=sendingmail/src\/main\/java&amp;lt;com.nexii.sendingmail{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=fileupload/src\/main\/java&amp;lt;com.nexii.fileupload{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=spring-boot-fileupload/src\/main\/java&amp;lt;com.javainuse{SpringBootFileUploadHelloWorldApplication.java[SpringBootFileUploadHelloWorldApplication&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=restwebService/src\/main\/java&amp;lt;com.nexii.restwebService{RestwebServiceApplication.java[RestwebServiceApplication&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=DemoCacheData/src\/main\/java&amp;lt;com.nexii.DemoCacheData{DemoCacheDataApplication.java[DemoCacheDataApplication&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=bootsample/src\/main\/java&amp;lt;com.nexii.bootsample{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=nexiilab/src\/main\/java&amp;lt;com.nexii.nexiilab{Application.java[Application&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=MultipleFileUpload/src\/main\/java&amp;lt;com.nexii.MultipleFileUpload{MultipleFileUploadApplication.java[MultipleFileUploadApplication&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=stp/src\/main\/java&amp;lt;com.nexiilabs.stp.prospect{Sample.java[Sample&lt;/infoNode&gt;&#x0A;&lt;infoNode&gt;=stp/src\/main\/java&amp;lt;com.nexiilabs{SpringSTPApplication.java[SpringSTPApplication&lt;/infoNode&gt;&#x0A;&lt;/historyRootNode&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<section name="DialogBoundsSettings">
+			<item value="600" key="DIALOG_WIDTH"/>
+			<item value="1|Ubuntu|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+			<item value="500" key="DIALOG_HEIGHT"/>
+			<item value="480" key="DIALOG_X_ORIGIN"/>
+			<item value="86" key="DIALOG_Y_ORIGIN"/>
+		</section>
+	</section>
+</section>

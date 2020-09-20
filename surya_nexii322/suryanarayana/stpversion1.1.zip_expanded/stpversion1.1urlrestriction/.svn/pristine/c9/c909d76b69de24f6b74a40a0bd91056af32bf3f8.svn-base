@@ -1,0 +1,72 @@
+package com.nexiilabs.stp.prospect;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ContactsReportsServiceImpl implements ContactReportsService {
+	@Autowired
+	ContactReportsRepository contactReportsRepository;
+	@Override
+	public List<ProspectListResposeDTO> getTodayContactList(int userId) {
+		return contactReportsRepository.getTodayContactList(userId);
+	}
+
+	@Override
+	public ContactCountResponseDTO getContactCount(int userId) {
+		ContactCountResponseDTO contactCountResponseDTO = new ContactCountResponseDTO();
+		LocalDate today = LocalDate.now();
+		LocalDate monday = today;
+		while (monday.getDayOfWeek() != DayOfWeek.MONDAY) {
+			monday = monday.minusDays(1);
+		}
+		LocalDate sunday = today;
+		while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY) {
+			sunday = sunday.plusDays(1);
+		}
+		int todayCount = contactReportsRepository.getContactCount(userId);
+		int weekCount = contactReportsRepository.getBetweenCount(monday.toString(), sunday.toString(), userId);
+		int monthCount = contactReportsRepository.getBetweenCount(today.withDayOfMonth(1).toString(), today.toString(), userId);
+		int dateFilterCount = contactReportsRepository.getBetweenCount(today.minusMonths(1).withDayOfMonth(1).toString(), today.toString(), userId);
+		contactCountResponseDTO.setWeeklyCount(weekCount);
+		contactCountResponseDTO.setMonthlyCount(monthCount);
+		contactCountResponseDTO.setTodayCount(todayCount);
+		contactCountResponseDTO.setDateFilterCount(dateFilterCount);
+		return contactCountResponseDTO;
+	}
+
+	@Override
+	public int getFilterdDateContactCount(String startDate, String endDate, int userId) {
+		return contactReportsRepository.getBetweenCount(startDate,endDate,userId);
+	}
+
+	@Override
+	public List<ProspectListResposeDTO> getWeeklyContactList(int userId) {
+		LocalDate today = LocalDate.now();
+		LocalDate monday = today;
+		while (monday.getDayOfWeek() != DayOfWeek.MONDAY) {
+			monday = monday.minusDays(1);
+		}
+		LocalDate sunday = today;
+		while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY) {
+			sunday = sunday.plusDays(1);
+		}
+		return contactReportsRepository.getBetweenDatesContactList(monday.toString(),sunday.toString(),userId);
+	}
+
+	@Override
+	public List<ProspectListResposeDTO> getMonthlyContactList(int userId) {
+		LocalDate today = LocalDate.now();
+		return contactReportsRepository.getBetweenDatesContactList(today.withDayOfMonth(1).toString(), today.toString(), userId);
+	}
+
+	@Override
+	public List<ProspectListResposeDTO> getFilteredDateContactList(int userId, String startDate, String endDate) {
+		return contactReportsRepository.getBetweenDatesContactList(startDate, endDate, userId);
+	}
+
+}

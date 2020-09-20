@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="springconfigclientcloudbus"/>
+<aop-project name="springconfigservercloudbus"/>
+<aop-project name="springcloudconfigserver"/>
+<aop-project name="springconfigclient"/>
+</aop-reference-model>

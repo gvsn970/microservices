@@ -1,0 +1,462 @@
+function followupCounts(){
+	var userTypeId=$("#propsectUser").val();
+	//alert(userTypeId);
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/followupReportsCounts?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			$('.todayUpdatedCount').text(data.todayUpdateCount);
+			$('.todayNotUpdatedCount').text(data.todayNotUpdateCount);
+			$('.weeklyUpdatedCount').text(data.weeklyUpdateCount);
+			$('.weeklyNotUpdatedCount').text(data.weeklyNotUpdateCount);
+			$('.monthlyUpdatedCount').text(data.monthlyUpdateCount);
+			$('.monthlyNotUpdatedCount').text(data.monthlyNotUpdateCount);
+			$('.dateRangeUpdatedCount').text(data.dateRangeUpdateCount);
+			$('.dateRangeNotUpdatedCount').text(data.dateRangeNotUpdateCount);
+			$('#startDate1').val(data.startDate);
+			$('#endDate1').val(data.endDate);
+			$("#distabl").hide();
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}
+function dateRangeFollowupCounts(){
+	var userTypeId=$("#propsectUser").val();
+	var startDate=$('#startDate1').val();
+	var endDate=$('#endDate1').val();
+	var params = {
+			userTypeId : userTypeId ,
+			startDate : startDate ,
+			endDate : endDate,
+	}
+	var queryParam = jQuery.param( params );
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/dateRangefollowupReportsCounts",
+		data : queryParam,
+		success : function(data) {
+			$('.dateRangeUpdatedCount').text(data.dateRangeUpdateCount);
+			$('.dateRangeNotUpdatedCount').text(data.dateRangeNotUpdateCount);
+			$('#startDate1').val(data.startDate);
+			$('#endDate1').val(data.endDate);
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}
+
+function todayUpdatedFollowupReportsList(){
+	var userTypeId=$("#propsectUser").val();
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/todayUpdatedFollowupReportsList?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			if (data.length > 0) {
+				var createdon="";
+				$('#followupReportsList').html("");
+				$.each(data,function(index, item) {
+					var createdon=item.createdOn.split(" ");
+					var eachrow = '<tr class="gradeX">'
+						+ "<td>"+ item.prospectName+ "</td>"
+						+ "<td>"+ item.companyName+ "</td>"
+						+ "<td>"+ item.email+ "</td>"
+						+ "<td>"+ item.phoneNumber+ "</td>"
+						+ "<td>"+ createdon[0]+ "</td>"
+						+ "<td>"+ item.stage+ "</td>"
+						+ "<td>"+ item.meetingType+ "</td>"
+						+ "<td>"+ item.nextFollowup+ "</td>"
+						+ "<td>"
+						+ '<a href="#custom-modal-history" class="btn btn-xs btn-inverse waves-effect waves-light" onclick="prospectHistoryView('+ item.fkProspectId+');" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">History</a>'
+						+"</td>"
+						+ "</tr>";
+					
+					$('#followupReportsList').append(eachrow);
+				});
+				$('#datatable-responsive').DataTable();
+				
+			}else {
+				$('#datatable-responsive').dataTable().fnDestroy();
+				//$('#followupReportsList').html("");
+				$('#datatable-responsive').DataTable({
+					"language": {
+						"emptyTable": "Today there is no followups"
+					}
+				});
+				
+			}
+
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}
+function todayNotUpdatedFollowupReports(){
+	var userTypeId=$("#propsectUser").val();
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/todayNotUpdatedFollowupReportsList?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			if (data.length > 0) {
+				var createdon="";
+				$('#followupReportsList').html("");
+				$.each(data,function(index, item) {
+					var createdon=item.createdOn.split(" ");
+					var eachrow = '<tr class="gradeX">'
+						+ "<td>"+ item.prospectName+ "</td>"
+						+ "<td>"+ item.companyName+ "</td>"
+						+ "<td>"+ item.email+ "</td>"
+						+ "<td>"+ item.phoneNumber+ "</td>"
+						+ "<td>"+ createdon[0]+ "</td>"
+						+ "<td>"+ item.stage+ "</td>"
+						+ "<td>"+ item.meetingType+ "</td>"
+						+ "<td>"+ item.nextFollowup+ "</td>"
+						+ "<td>"
+						+ '<a href="#custom-modal-history" class="btn btn-xs btn-inverse waves-effect waves-light" onclick="prospectHistoryView('+ item.fkProspectId+');" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">History</a>'
+						+"</td>"
+						+ "</tr>";
+					
+					$('#followupReportsList').append(eachrow);
+				});
+				$('#datatable-responsive').DataTable();
+				
+			}else {
+				$('#datatable-responsive').dataTable().fnDestroy();
+				//$('#followupReportsList').html("");
+				$('#datatable-responsive').DataTable({
+					"language": {
+						"emptyTable": "Today there is no followups"
+					}
+				});
+				
+			}
+
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}
+
+function weeklyUpdatedFollowupReports(){
+	var userTypeId=$("#propsectUser").val();
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/weeklyUpdatedFollowupReportsList?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			if (data.length > 0) {
+				var createdon="";
+				$('#followupReportsList').html("");
+				$.each(data,function(index, item) {
+					var createdon=item.createdOn.split(" ");
+					var eachrow = '<tr class="gradeX">'
+						+ "<td>"+ item.prospectName+ "</td>"
+						+ "<td>"+ item.companyName+ "</td>"
+						+ "<td>"+ item.email+ "</td>"
+						+ "<td>"+ item.phoneNumber+ "</td>"
+						+ "<td>"+ createdon[0]+ "</td>"
+						+ "<td>"+ item.stage+ "</td>"
+						+ "<td>"+ item.meetingType+ "</td>"
+						+ "<td>"+ item.nextFollowup+ "</td>"
+						+ "<td>"
+						+ '<a href="#custom-modal-history" class="btn btn-xs btn-inverse waves-effect waves-light" onclick="prospectHistoryView('+ item.fkProspectId+');" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">History</a>'
+						+"</td>"
+						+ "</tr>";
+					
+					$('#followupReportsList').append(eachrow);
+				});
+				$('#datatable-responsive').DataTable();
+				
+			}else {
+				$('#datatable-responsive').dataTable().fnDestroy();
+				//$('#followupReportsList').html("");
+				$('#datatable-responsive').DataTable({
+					"language": {
+						"emptyTable": "Today there is no followups"
+					}
+				});
+				
+			}
+
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}
+
+function weeklyNotUpdatedFollowupReportsList(){
+	var userTypeId=$("#propsectUser").val();
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/weeklyNotUpdatedFollowupReportsList?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			if (data.length > 0) {
+				var createdon="";
+				$('#followupReportsList').html("");
+				$.each(data,function(index, item) {
+					var createdon=item.createdOn.split(" ");
+					var eachrow = '<tr class="gradeX">'
+						+ "<td>"+ item.prospectName+ "</td>"
+						+ "<td>"+ item.companyName+ "</td>"
+						+ "<td>"+ item.email+ "</td>"
+						+ "<td>"+ item.phoneNumber+ "</td>"
+						+ "<td>"+ createdon[0]+ "</td>"
+						+ "<td>"+ item.stage+ "</td>"
+						+ "<td>"+ item.meetingType+ "</td>"
+						+ "<td>"+ item.nextFollowup+ "</td>"
+						+ "<td>"
+						+ '<a href="#custom-modal-history" class="btn btn-xs btn-inverse waves-effect waves-light" onclick="prospectHistoryView('+ item.fkProspectId+');" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">History</a>'
+						+"</td>"
+						+ "</tr>";
+					
+					$('#followupReportsList').append(eachrow);
+				});
+				$('#datatable-responsive').DataTable();
+				
+			}else {
+				$('#datatable-responsive').dataTable().fnDestroy();
+				//$('#followupReportsList').html("");
+				$('#datatable-responsive').DataTable({
+					"language": {
+						"emptyTable": "Today there is no followups"
+					}
+				});
+				
+			}
+
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}
+
+function monthlyUpdatedFollowupReportsList(){
+	var userTypeId=$("#propsectUser").val();
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/monthlyUpdatedFollowupReportsList?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			if (data.length > 0) {
+				var createdon="";
+				$('#followupReportsList').html("");
+				$.each(data,function(index, item) {
+					var createdon=item.createdOn.split(" ");
+					var eachrow = '<tr class="gradeX">'
+						+ "<td>"+ item.prospectName+ "</td>"
+						+ "<td>"+ item.companyName+ "</td>"
+						+ "<td>"+ item.email+ "</td>"
+						+ "<td>"+ item.phoneNumber+ "</td>"
+						+ "<td>"+ createdon[0]+ "</td>"
+						+ "<td>"+ item.stage+ "</td>"
+						+ "<td>"+ item.meetingType+ "</td>"
+						+ "<td>"+ item.nextFollowup+ "</td>"
+						+ "<td>"
+						+ '<a href="#custom-modal-history" class="btn btn-xs btn-inverse waves-effect waves-light" onclick="prospectHistoryView('+ item.fkProspectId+');" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">History</a>'
+						+"</td>"
+						+ "</tr>";
+					
+					$('#followupReportsList').append(eachrow);
+				});
+				$('#datatable-responsive').DataTable();
+				
+			}else {
+				$('#datatable-responsive').dataTable().fnDestroy();
+				//$('#followupReportsList').html("");
+				$('#datatable-responsive').DataTable({
+					"language": {
+						"emptyTable": "Today there is no followups"
+					}
+				});
+				
+			}
+
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}
+
+function monthlyNotUpdatedFollowupReportsList(){
+	var userTypeId=$("#propsectUser").val();
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/monthlyNotUpdatedFollowupReportsList?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			if (data.length > 0) {
+				var createdon="";
+				$('#followupReportsList').html("");
+				$.each(data,function(index, item) {
+					var createdon=item.createdOn.split(" ");
+					var eachrow = '<tr class="gradeX">'
+						+ "<td>"+ item.prospectName+ "</td>"
+						+ "<td>"+ item.companyName+ "</td>"
+						+ "<td>"+ item.email+ "</td>"
+						+ "<td>"+ item.phoneNumber+ "</td>"
+						+ "<td>"+ createdon[0]+ "</td>"
+						+ "<td>"+ item.stage+ "</td>"
+						+ "<td>"+ item.meetingType+ "</td>"
+						+ "<td>"+ item.nextFollowup+ "</td>"
+						+ "<td>"
+						+ '<a href="#custom-modal-history" class="btn btn-xs btn-inverse waves-effect waves-light" onclick="prospectHistoryView('+ item.fkProspectId+');" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">History</a>'
+						+"</td>"
+						+ "</tr>";
+					
+					$('#followupReportsList').append(eachrow);
+				});
+				$('#datatable-responsive').DataTable();
+				
+			}else {
+				$('#datatable-responsive').dataTable().fnDestroy();
+				//$('#followupReportsList').html("");
+				$('#datatable-responsive').DataTable({
+					"language": {
+						"emptyTable": "Today there is no followups"
+					}
+				});
+				
+			}
+
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+}
+
+function dateRangeUpdatedFollowupReportsList(){
+	var userTypeId=$("#propsectUser").val();
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/dateRangeUpdatedFollowupReportsList?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			if (data.length > 0) {
+				var createdon="";
+				$('#followupReportsList').html("");
+				$.each(data,function(index, item) {
+					var createdon=item.createdOn.split(" ");
+					var eachrow = '<tr class="gradeX">'
+						+ "<td>"+ item.prospectName+ "</td>"
+						+ "<td>"+ item.companyName+ "</td>"
+						+ "<td>"+ item.email+ "</td>"
+						+ "<td>"+ item.phoneNumber+ "</td>"
+						+ "<td>"+ createdon[0]+ "</td>"
+						+ "<td>"+ item.stage+ "</td>"
+						+ "<td>"+ item.meetingType+ "</td>"
+						+ "<td>"+ item.nextFollowup+ "</td>"
+						+ "<td>"
+						+ '<a href="#custom-modal-history" class="btn btn-xs btn-inverse waves-effect waves-light" onclick="prospectHistoryView('+ item.fkProspectId+');" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">History</a>'
+						+"</td>"
+						+ "</tr>";
+					
+					$('#followupReportsList').append(eachrow);
+				});
+				$('#datatable-responsive').DataTable();
+				
+			}else {
+				$('#datatable-responsive').dataTable().fnDestroy();
+				//$('#followupReportsList').html("");
+				$('#datatable-responsive').DataTable({
+					"language": {
+						"emptyTable": "Today there is no followups"
+					}
+				});
+				
+			}
+
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}
+
+function dateRangeNotUpdatedFollowupReportsList(){
+	var userTypeId=$("#propsectUser").val();
+	var appBasePath = getAppBasePath();
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : appBasePath + "/folloupreports/dateRangeNotUpdatedFollowupReportsList?userTypeId="+userTypeId,
+		success : function(data) {
+			//alert(data);
+			if (data.length > 0) {
+				var createdon="";
+				$('#followupReportsList').html("");
+				$.each(data,function(index, item) {
+					var createdon=item.createdOn.split(" ");
+					var eachrow = '<tr class="gradeX">'
+						+ "<td>"+ item.prospectName+ "</td>"
+						+ "<td>"+ item.companyName+ "</td>"
+						+ "<td>"+ item.email+ "</td>"
+						+ "<td>"+ item.phoneNumber+ "</td>"
+						+ "<td>"+ createdon[0]+ "</td>"
+						+ "<td>"+ item.stage+ "</td>"
+						+ "<td>"+ item.meetingType+ "</td>"
+						+ "<td>"+ item.nextFollowup+ "</td>"
+						+ "<td>"
+						+ '<a href="#custom-modal-history" class="btn btn-xs btn-inverse waves-effect waves-light" onclick="prospectHistoryView('+ item.fkProspectId+');" data-animation="fadein" data-plugin="custommodal" data-overlaySpeed="200" data-overlayColor="#36404a">History</a>'
+						+"</td>"
+						+ "</tr>";
+					
+					$('#followupReportsList').append(eachrow);
+				});
+				$('#datatable-responsive').DataTable();
+				
+			}else {
+				$('#datatable-responsive').dataTable().fnDestroy();
+				//$('#followupReportsList').html("");
+				$('#datatable-responsive').DataTable({
+					"language": {
+						"emptyTable": "Today there is no followups"
+					}
+				});
+				
+			}
+
+		},
+		error : function(req, status, msg) {
+			alert("in error" + req + status + msg);
+		}
+	});
+	
+}

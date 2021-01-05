@@ -1,0 +1,32 @@
+info:
+  component: aai-allmasters-service
+
+ymlwelcome:
+  message: "All Masters Service - YML"
+  
+server:
+  port: 9886
+
+spring:
+  profiles:
+    active: "@activatedProperties@"
+  
+ribbon:
+  eureka:
+    enabled: true
+  
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    registryFetchIntervalSeconds: 2
+    healthcheck:
+      enabled: true
+    lease:
+      duration: 5
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2

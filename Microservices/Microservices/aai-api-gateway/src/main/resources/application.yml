@@ -1,0 +1,58 @@
+info:
+  component: api-gateway
+
+ymlwelcome:
+  message: " API Gateway - YML"
+
+spring:
+  profiles:
+    active: "@activatedProperties@"
+  
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+    
+zuul:
+  host:
+    maxTotalConnections: 9000000
+    maxPerRouteConnections: 100000 
+  semaphore:
+    maxSemaphores: 20000
+  prefix: /api
+  routes:
+   AAI-ALLMASTERS-SERVICE:
+      path: /allmasters/**
+      serviceId: aai-allmasters
+   
+ribbon:
+  ReadTimeout: 60000
+  eureka:
+    enabled: true
+    
+eureka:
+  client:
+    fetchRegistry: true
+    registryFetchIntervalSeconds: 2
+    registerWithEureka: true
+    healthcheck:
+      enabled: true
+    lease:
+      duration: 5
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    
+server:
+  port: 9880
+  
+logging:
+  level:
+    ROOT: ERROR
+    org.springframework.web: ERROR

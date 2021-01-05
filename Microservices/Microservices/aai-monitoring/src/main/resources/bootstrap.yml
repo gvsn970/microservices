@@ -1,0 +1,7 @@
+bootmessage: " Monitoring Dashboard Service - BOOTSTRAP"
+
+spring:
+  application:
+    name: aai-monitoring-dashboard
+  profiles:
+    active: "@activatedProperties@"
